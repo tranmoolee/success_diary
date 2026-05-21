@@ -1,0 +1,118 @@
+/* ============ THEME: BOY · 科技少年 (cyber blue / mint) ============ */
+body[data-theme="boy"] {
+  --bg: #0b1220;
+  --card: rgba(20, 33, 61, 0.78);
+  --primary: #38bdf8;
+  --primary-light: rgba(56, 189, 248, 0.18);
+  --primary-dark: #0ea5e9;
+  --accent: #34d399;
+  --accent-light: rgba(52, 211, 153, 0.18);
+  --success: #22d3ee;
+  --success-light: rgba(34, 211, 238, 0.18);
+  --text: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border: rgba(56, 189, 248, 0.22);
+  --danger: #f87171;
+  --radius: 14px;
+  --shadow: 0 12px 28px rgba(2, 6, 23, 0.5);
+  --shadow-lg: 0 24px 60px rgba(2, 6, 23, 0.65);
+}
+
+body[data-theme="boy"] {
+  background:
+    radial-gradient(circle at 8% 4%, rgba(56, 189, 248, 0.22), transparent 30%),
+    radial-gradient(circle at 92% 12%, rgba(52, 211, 153, 0.18), transparent 30%),
+    linear-gradient(180deg, #020617 0%, #0f172a 50%, #0b1220 100%);
+  color: var(--text);
+}
+body[data-theme="boy"] .auth-title { color: var(--primary); }
+body[data-theme="boy"] .auth-logo {
+  width: 92px; height: 92px; border-radius: 18px; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #0ea5e9, #22d3ee 60%, #34d399);
+  color: #051026; box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.18), 0 20px 50px rgba(56, 189, 248, 0.35);
+  font-weight: 900;
+}
+body[data-theme="boy"] .auth-subtitle { color: var(--text-secondary); }
+body[data-theme="boy"] .auth-input,
+body[data-theme="boy"] .modal-input,
+body[data-theme="boy"] .dream-input,
+body[data-theme="boy"] .entry-input,
+body[data-theme="boy"] .tag-select {
+  background: rgba(15, 23, 42, 0.78); color: var(--text);
+  border-color: rgba(56, 189, 248, 0.22);
+}
+body[data-theme="boy"] .auth-input::placeholder,
+body[data-theme="boy"] .modal-input::placeholder,
+body[data-theme="boy"] .dream-input::placeholder,
+body[data-theme="boy"] .entry-input::placeholder { color: var(--text-muted); }
+body[data-theme="boy"] .auth-btn,
+body[data-theme="boy"] .save-btn,
+body[data-theme="boy"] .modal-btn,
+body[data-theme="boy"] .dream-add-btn,
+body[data-theme="boy"] .onboarding-next {
+  background: linear-gradient(135deg, #0ea5e9, #22d3ee 60%, #34d399);
+  color: #051026; box-shadow: 0 14px 30px rgba(56, 189, 248, 0.32);
+}
+body[data-theme="boy"] .auth-form {
+  background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 16px; padding: 18px; backdrop-filter: blur(14px);
+}
+body[data-theme="boy"] .header { background: rgba(2, 6, 23, 0.72); border-bottom: 1px solid rgba(56, 189, 248, 0.15); backdrop-filter: blur(16px); }
+body[data-theme="boy"] .header h1 { color: var(--text); }
+body[data-theme="boy"] .header .subtitle { color: var(--text-muted); }
+body[data-theme="boy"] .streak-badge {
+  background: linear-gradient(135deg, rgba(52, 211, 153, 0.16), rgba(56, 189, 248, 0.18));
+  color: var(--accent); border: 1px solid rgba(52, 211, 153, 0.4);
+}
+body[data-theme="boy"] .card,
+body[data-theme="boy"] .chart-container,
+body[data-theme="boy"] .stat-card,
+body[data-theme="boy"] .profile-card,
+body[data-theme="boy"] .badge-tile,
+body[data-theme="boy"] .badge-summary,
+body[data-theme="boy"] .quest-card,
+body[data-theme="boy"] .progress-section {
+  background: rgba(15, 23, 42, 0.72); border: 1px solid rgba(56, 189, 248, 0.18); backdrop-filter: blur(12px);
+}
+body[data-theme="boy"] .quote-card {
+  background: linear-gradient(135deg, #0f172a, #1e3a8a 50%, #0ea5e9);
+  border: 1px solid rgba(56, 189, 248, 0.32);
+}
+body[data-theme="boy"] .progress-ring-fill { stroke: var(--primary); filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6)); }
+body[data-theme="boy"] .progress-center { color: var(--primary); }
+body[data-theme="boy"] .entry-row { background: rgba(2, 6, 23, 0.48); border: 1px solid rgba(56, 189, 248, 0.15); border-radius: 12px; padding: 8px; }
+body[data-theme="boy"] .entry-number { background: rgba(56, 189, 248, 0.18); color: var(--primary); }
+body[data-theme="boy"] .entry-number.filled { background: linear-gradient(135deg, #0ea5e9, #34d399); color: #051026; }
+body[data-theme="boy"] .entry-add-btn { color: var(--primary); border-color: rgba(56, 189, 248, 0.32); background: rgba(56, 189, 248, 0.08); }
+body[data-theme="boy"] .tab-bar {
+  bottom: 10px; width: calc(100% - 24px); border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 20px; background: rgba(2, 6, 23, 0.84); backdrop-filter: blur(18px);
+}
+body[data-theme="boy"] .tab-item { color: var(--text-muted); font-weight: 700; }
+body[data-theme="boy"] .tab-item.active {
+  color: #051026; background: linear-gradient(135deg, #38bdf8, #34d399);
+  border-radius: 14px; box-shadow: 0 0 18px rgba(56, 189, 248, 0.45);
+}
+body[data-theme="boy"] .jar-card { background: linear-gradient(135deg, #0ea5e9, #22d3ee 60%, #34d399); color: #051026; }
+body[data-theme="boy"] .dream-progress-fill { background: linear-gradient(90deg, #38bdf8, #34d399); }
+body[data-theme="boy"] .stat-value { color: var(--primary); text-shadow: 0 0 12px rgba(56, 189, 248, 0.5); }
+body[data-theme="boy"] .profile-avatar { background: linear-gradient(135deg, #38bdf8, #34d399); color: #051026; }
+body[data-theme="boy"] .modal { background: rgba(15, 23, 42, 0.94); color: var(--text); border-top: 1px solid rgba(56, 189, 248, 0.2); }
+body[data-theme="boy"] .modal-overlay { background: rgba(2, 6, 23, 0.7); backdrop-filter: blur(8px); }
+body[data-theme="boy"] .toast { background: rgba(2, 6, 23, 0.92); color: var(--primary); border: 1px solid rgba(56, 189, 248, 0.32); }
+body[data-theme="boy"] .calendar-day { color: var(--text); }
+body[data-theme="boy"] .calendar-day:hover { background: rgba(56, 189, 248, 0.12); }
+body[data-theme="boy"] .calendar-day.today { border-color: var(--primary); }
+body[data-theme="boy"] .badge-tile.unlocked {
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(15, 23, 42, 0.78));
+  border: 1px solid rgba(56, 189, 248, 0.4);
+}
+body[data-theme="boy"] .badge-tile.unlocked .icon { filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.7)); }
+body[data-theme="boy"] .empty-state { color: var(--text-muted); }
+body[data-theme="boy"] .onboarding-overlay { background: linear-gradient(180deg, #020617, #0b1220); color: var(--text); }
+body[data-theme="boy"] .onboarding-slide h2 { color: var(--text); }
+body[data-theme="boy"] .onboarding-slide p { color: var(--text-secondary); }
+body[data-theme="boy"] .onboarding-skip { background: transparent; color: var(--text-secondary); border-color: rgba(56, 189, 248, 0.22); }
+body[data-theme="boy"] .onboarding-dot { background: rgba(56, 189, 248, 0.22); }
+body[data-theme="boy"] .onboarding-dot.active { background: var(--primary); }
