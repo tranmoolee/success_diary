@@ -1,30 +1,36 @@
 // ============ AUTH ============
 let turnstileSiteKey = '';
 let turnstileWidgetId = null;
+let turnstileRenderTimer = null;
 
 async function initTurnstile() {
   try {
     const data = await api('/config');
     turnstileSiteKey = data.turnstileSiteKey || '';
+    console.info('[turnstile] config:', turnstileSiteKey ? 'site key configured' : 'site key missing');
     if (!isLoginMode) renderTurnstile();
-  } catch {
+  } catch (err) {
     turnstileSiteKey = '';
+    console.warn('[turnstile] config request failed:', err.message);
   }
 }
 
 function renderTurnstile() {
   const target = el('turnstileWidget');
   if (!target || isLoginMode) return;
+  clearTimeout(turnstileRenderTimer);
   if (!turnstileSiteKey) {
-    target.innerHTML = '<div class="auth-error show">人机验证未配置</div>';
+    target.innerHTML = '<div class="auth-turnstile-placeholder">人机验证未配置</div>';
     return;
   }
   if (!window.turnstile) {
-    setTimeout(renderTurnstile, 200);
+    target.innerHTML = '<div class="auth-turnstile-placeholder">正在加载人机验证...</div>';
+    turnstileRenderTimer = setTimeout(renderTurnstile, 250);
     return;
   }
   if (turnstileWidgetId !== null) {
     window.turnstile.reset(turnstileWidgetId);
+    console.info('[turnstile] reset widget');
     return;
   }
   target.innerHTML = '';
@@ -32,8 +38,14 @@ function renderTurnstile() {
     sitekey: turnstileSiteKey,
     action: 'register',
     theme: currentTheme === 'boy' ? 'dark' : 'auto',
+    callback: () => console.info('[turnstile] challenge completed'),
+    'error-callback': () => console.warn('[turnstile] challenge error'),
+    'expired-callback': () => console.info('[turnstile] token expired'),
   });
+  console.info('[turnstile] rendered widget:', turnstileWidgetId);
 }
+
+window.renderTurnstile = renderTurnstile;
 
 function resetTurnstile() {
   if (window.turnstile && turnstileWidgetId !== null) {
@@ -49,7 +61,7 @@ function toggleAuthMode() {
   el('authSwitchText').textContent = isLoginMode ? '还没有账号？' : '已有账号？';
   el('authSwitchLink').textContent = isLoginMode ? '注册' : '登录';
   el('authError').classList.remove('show');
-  if (!isLoginMode) renderTurnstile();
+  if (!isLoginMode) requestAnimationFrame(renderTurnstile);
 }
 
 async function handleAuth() {

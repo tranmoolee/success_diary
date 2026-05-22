@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(docker compose *)",
-      "Bash(curl -sS -X POST http://localhost:3800/api/auth/register -H 'content-type: application/json' -d \"{\\\\\"username\\\\\":\\\\\"tester_$\\(date +%s\\)\\\\\",\\\\\"password\\\\\":\\\\\"Test12345\\\\\",\\\\\"displayName\\\\\":\\\\\"小测试\\\\\"}\")",
-      "mcp__Claude_Preview__preview_start"
-    ]
-  }
-}

@@ -50,7 +50,23 @@ a, input, select, textarea { transition: border-color 0.2s ease, box-shadow 0.2s
 .auth-input { width: 100%; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; margin-bottom: 12px; background: white; color: var(--text); }
 .auth-input:focus { border-color: var(--primary); }
 .auth-input::placeholder { color: var(--text-muted); }
-.auth-turnstile { display: flex; justify-content: center; margin: 2px 0 12px; min-height: 65px; }
+.auth-turnstile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 8px 0 16px;
+  min-height: 72px;
+}
+.auth-turnstile-placeholder {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--primary-light);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
 .auth-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 4px; }
 .auth-btn:hover { background: var(--primary-dark); }
 .auth-btn:disabled { opacity: 0.5; cursor: default; }
