@@ -1,7 +1,7 @@
-/* ============ THEME: GIRL · 粉樱少女 (pink / lavender pastel) ============ */
+/* ============ THEME: GIRL · 粉樱少女 — sakura dreamscape / soft glass ============ */
 body[data-theme="girl"] {
-  --bg: #fff1f5;
-  --card: rgba(255, 255, 255, 0.92);
+  --bg: #fff0f6;
+  --card: rgba(255, 255, 255, 0.68);
   --primary: #ec4899;
   --primary-light: #fce7f3;
   --primary-dark: #be185d;
@@ -12,33 +12,68 @@ body[data-theme="girl"] {
   --text: #4a044e;
   --text-secondary: #7c3aed;
   --text-muted: #c084fc;
-  --border: rgba(236, 72, 153, 0.18);
+  --border: rgba(236, 72, 153, 0.12);
   --danger: #ef4444;
-  --radius: 22px;
-  --shadow: 0 12px 28px rgba(236, 72, 153, 0.14);
-  --shadow-lg: 0 24px 60px rgba(236, 72, 153, 0.22);
+  --radius: 24px;
+  --shadow: 0 8px 32px rgba(236, 72, 153, 0.10);
+  --shadow-lg: 0 24px 60px rgba(236, 72, 153, 0.18);
 }
 
 body[data-theme="girl"] {
   background:
-    radial-gradient(circle at 12% 4%, rgba(244, 114, 182, 0.32), transparent 30%),
-    radial-gradient(circle at 88% 14%, rgba(196, 181, 253, 0.28), transparent 30%),
-    linear-gradient(180deg, #fff1f5 0%, #fbe7f8 50%, #f3e8ff 100%);
+    radial-gradient(circle at 15% 10%, rgba(244, 114, 182, 0.28), transparent 35%),
+    radial-gradient(circle at 85% 15%, rgba(196, 181, 253, 0.24), transparent 35%),
+    radial-gradient(circle at 50% 85%, rgba(251, 207, 232, 0.20), transparent 40%),
+    linear-gradient(180deg, #fff0f6 0%, #fbe7f8 50%, #f3e8ff 100%);
+}
+
+/* floating sakura petals */
+body[data-theme="girl"]::before,
+body[data-theme="girl"]::after {
+  content: '🌸'; position: fixed; pointer-events: none; z-index: 0;
+  font-size: 18px; opacity: 0.5;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+body[data-theme="girl"]::before {
+  top: 8%; left: 12%;
+  animation: petalFloat1 16s infinite;
+}
+body[data-theme="girl"]::after {
+  top: 18%; right: 8%; font-size: 14px; opacity: 0.35;
+  animation: petalFloat2 22s infinite;
+}
+@keyframes petalFloat1 {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 0.5; }
+  25% { transform: translate(30px, 60px) rotate(90deg); opacity: 0.6; }
+  50% { transform: translate(-10px, 130px) rotate(200deg); opacity: 0.4; }
+  75% { transform: translate(20px, 60px) rotate(300deg); opacity: 0.55; }
+  100% { transform: translate(0, 0) rotate(360deg); opacity: 0.5; }
+}
+@keyframes petalFloat2 {
+  0% { transform: translate(0, 0) rotate(0deg); opacity: 0.35; }
+  33% { transform: translate(-40px, 80px) rotate(120deg); opacity: 0.45; }
+  66% { transform: translate(20px, 140px) rotate(240deg); opacity: 0.3; }
+  100% { transform: translate(0, 0) rotate(360deg); opacity: 0.35; }
 }
 
 body[data-theme="girl"] .auth-title {
-  background: linear-gradient(135deg, #ec4899, #a855f7); -webkit-background-clip: text; color: transparent; font-size: 30px;
+  background: linear-gradient(135deg, #ec4899, #a855f7); -webkit-background-clip: text; color: transparent;
+  font-size: 30px;
 }
 body[data-theme="girl"] .auth-logo {
   width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
   background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 50%, #c4b5fd 100%);
-  font-size: 52px; box-shadow: 0 24px 50px rgba(244, 114, 182, 0.4);
+  font-size: 52px;
+  box-shadow: 0 0 0 6px rgba(244, 114, 182, 0.15), 0 24px 50px rgba(244, 114, 182, 0.30);
   animation: floatBadge 3s ease-in-out infinite;
 }
 body[data-theme="girl"] .auth-subtitle { color: var(--primary-dark); font-weight: 700; }
 body[data-theme="girl"] .auth-form {
-  background: rgba(255, 255, 255, 0.85); border: 1px solid rgba(244, 114, 182, 0.28);
-  border-radius: 28px; padding: 20px; backdrop-filter: blur(16px);
+  background: rgba(255, 255, 255, 0.55); border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 28px; padding: 20px;
+  backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow: 0 8px 32px rgba(236, 72, 153, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 body[data-theme="girl"] .auth-btn,
 body[data-theme="girl"] .save-btn,
@@ -46,21 +81,55 @@ body[data-theme="girl"] .modal-btn,
 body[data-theme="girl"] .dream-add-btn,
 body[data-theme="girl"] .onboarding-next {
   background: linear-gradient(135deg, #f472b6, #ec4899 55%, #a855f7);
-  box-shadow: 0 14px 30px rgba(236, 72, 153, 0.28);
+  box-shadow: 0 14px 30px rgba(236, 72, 153, 0.22);
   border-radius: 16px;
+  transition: all 0.25s cubic-bezier(.2,.7,.2,1.2);
+}
+body[data-theme="girl"] .auth-btn:hover,
+body[data-theme="girl"] .save-btn:hover,
+body[data-theme="girl"] .modal-btn:hover,
+body[data-theme="girl"] .dream-add-btn:hover,
+body[data-theme="girl"] .onboarding-next:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 18px 38px rgba(236, 72, 153, 0.30);
 }
 body[data-theme="girl"] .auth-input,
 body[data-theme="girl"] .modal-input,
 body[data-theme="girl"] .dream-input,
 body[data-theme="girl"] .entry-input {
-  background: rgba(255, 255, 255, 0.92); border-radius: 14px; border-color: rgba(236, 72, 153, 0.22);
+  background: rgba(255, 255, 255, 0.60); border-radius: 14px;
+  border-color: rgba(236, 72, 153, 0.14);
+  backdrop-filter: blur(8px);
+  transition: all 0.22s ease;
 }
-body[data-theme="girl"] .header { background: rgba(255, 255, 255, 0.82); backdrop-filter: blur(14px); border-bottom: none; box-shadow: 0 6px 18px rgba(236, 72, 153, 0.10); }
-body[data-theme="girl"] .header h1 { background: linear-gradient(135deg, #ec4899, #a855f7); -webkit-background-clip: text; color: transparent; font-size: 22px; }
+body[data-theme="girl"] .auth-input:focus,
+body[data-theme="girl"] .modal-input:focus,
+body[data-theme="girl"] .dream-input:focus,
+body[data-theme="girl"] .entry-input:focus {
+  border-color: #ec4899;
+  box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.10), 0 0 16px rgba(236, 72, 153, 0.08);
+  background: rgba(255, 255, 255, 0.85);
+}
+body[data-theme="girl"] .header {
+  background: rgba(255, 255, 255, 0.50);
+  backdrop-filter: blur(24px) saturate(1.4);
+  border-bottom: none;
+  box-shadow: 0 4px 24px rgba(236, 72, 153, 0.06);
+}
+body[data-theme="girl"] .header h1 {
+  background: linear-gradient(135deg, #ec4899, #a855f7);
+  -webkit-background-clip: text; color: transparent; font-size: 22px;
+}
 body[data-theme="girl"] .streak-badge {
-  background: linear-gradient(135deg, #fce7f3, #f3e8ff); color: var(--primary-dark);
-  border: 1px solid rgba(236, 72, 153, 0.32); box-shadow: 0 8px 18px rgba(236, 72, 153, 0.18);
+  background: rgba(252, 231, 243, 0.65); color: var(--primary-dark);
+  border: 1px solid rgba(236, 72, 153, 0.22);
+  box-shadow: 0 6px 18px rgba(236, 72, 153, 0.12);
+  backdrop-filter: blur(8px);
   animation: pulseGlow 2.6s ease-in-out infinite;
+}
+@keyframes pulseGlow {
+  0%, 100% { transform: scale(1); box-shadow: 0 6px 18px rgba(236, 72, 153, 0.12); }
+  50% { transform: scale(1.04); box-shadow: 0 10px 24px rgba(236, 72, 153, 0.22); }
 }
 body[data-theme="girl"] .card,
 body[data-theme="girl"] .chart-container,
@@ -70,31 +139,130 @@ body[data-theme="girl"] .badge-tile,
 body[data-theme="girl"] .badge-summary,
 body[data-theme="girl"] .quest-card,
 body[data-theme="girl"] .progress-section {
-  background: rgba(255, 255, 255, 0.88); border: 1px solid rgba(244, 114, 182, 0.16); backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(1.3);
+  box-shadow: 0 8px 32px rgba(236, 72, 153, 0.06);
+  transition: all 0.25s cubic-bezier(.2,.7,.2,1.2);
+}
+body[data-theme="girl"] .card:hover,
+body[data-theme="girl"] .stat-card:hover,
+body[data-theme="girl"] .quest-card:hover {
+  transform: translateY(-3px) scale(1.005);
+  box-shadow: 0 14px 40px rgba(236, 72, 153, 0.12);
 }
 body[data-theme="girl"] .quote-card {
   background: linear-gradient(135deg, #f9a8d4 0%, #f472b6 45%, #c4b5fd 100%);
-  box-shadow: 0 22px 46px rgba(236, 72, 153, 0.22);
+  box-shadow: 0 22px 46px rgba(236, 72, 153, 0.18);
+  overflow: hidden;
+}
+body[data-theme="girl"] .quote-card::after {
+  content: '✨'; position: absolute; right: 14px; top: 10px;
+  font-size: 20px; opacity: 0.6;
+  animation: sparkleFloat 3s ease-in-out infinite;
+}
+@keyframes sparkleFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.6; }
+  50% { transform: translateY(-6px) rotate(15deg); opacity: 1; }
+}
+body[data-theme="girl"] .hero-card {
+  background: linear-gradient(140deg, #ec4899 0%, #f472b6 40%, #c4b5fd 100%);
+  box-shadow: 0 20px 50px rgba(236, 72, 153, 0.20);
 }
 body[data-theme="girl"] .progress-ring-fill { stroke: url(#progressGradient); }
 body[data-theme="girl"] .progress-center { color: var(--primary); }
-body[data-theme="girl"] .entry-row { background: rgba(255, 241, 245, 0.74); border: 1px solid rgba(236, 72, 153, 0.14); border-radius: 18px; padding: 8px; }
-body[data-theme="girl"] .entry-number { background: linear-gradient(135deg, #fce7f3, #f3e8ff); color: var(--primary); }
-body[data-theme="girl"] .entry-number.filled { background: linear-gradient(135deg, #ec4899, #a855f7); color: white; }
-body[data-theme="girl"] .entry-add-btn { color: var(--primary); border-color: rgba(236, 72, 153, 0.32); background: rgba(252, 231, 243, 0.6); }
-body[data-theme="girl"] .tab-bar {
-  bottom: 10px; width: calc(100% - 24px); border: 1px solid rgba(236, 72, 153, 0.16);
-  border-radius: 26px; background: rgba(255, 255, 255, 0.86); backdrop-filter: blur(18px);
-  box-shadow: 0 18px 50px rgba(236, 72, 153, 0.16);
+body[data-theme="girl"] .entry-row {
+  background: rgba(255, 241, 245, 0.50); border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 18px; padding: 8px;
+  backdrop-filter: blur(12px);
+  transition: all 0.22s ease;
 }
+body[data-theme="girl"] .entry-row:hover { transform: translateX(4px); }
+body[data-theme="girl"] .entry-number { background: rgba(252, 231, 243, 0.7); color: var(--primary); }
+body[data-theme="girl"] .entry-number.filled {
+  background: linear-gradient(135deg, #ec4899, #a855f7); color: white;
+  box-shadow: 0 6px 14px rgba(236, 72, 153, 0.20);
+}
+body[data-theme="girl"] .entry-add-btn { color: var(--primary); border-color: rgba(236, 72, 153, 0.22); background: rgba(252, 231, 243, 0.35); }
+body[data-theme="girl"] .entry-add-btn:hover { background: rgba(252, 231, 243, 0.65); }
+body[data-theme="girl"] .tab-bar {
+  bottom: 10px; width: calc(100% - 24px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.50);
+  backdrop-filter: blur(24px) saturate(1.4);
+  box-shadow: 0 12px 40px rgba(236, 72, 153, 0.10);
+}
+body[data-theme="girl"] .tab-item { transition: all 0.25s cubic-bezier(.2,.7,.2,1.2); }
 body[data-theme="girl"] .tab-item.active {
   color: white; background: linear-gradient(135deg, #f472b6, #ec4899, #a855f7);
-  border-radius: 18px; box-shadow: 0 10px 18px rgba(236, 72, 153, 0.32);
+  border-radius: 18px;
+  box-shadow: 0 8px 20px rgba(236, 72, 153, 0.25);
+  animation: tabBounce 0.4s cubic-bezier(.2,.7,.2,1.3);
 }
-body[data-theme="girl"] .jar-card { background: linear-gradient(135deg, #f9a8d4, #fbcfe8 45%, #c4b5fd); }
-body[data-theme="girl"] .dream-progress-fill { background: linear-gradient(90deg, #f472b6, #a855f7); }
+@keyframes tabBounce {
+  0% { transform: scale(0.9); }
+  60% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+body[data-theme="girl"] .jar-card {
+  background: linear-gradient(135deg, #f9a8d4, #fbcfe8 45%, #c4b5fd);
+  box-shadow: 0 20px 50px rgba(236, 72, 153, 0.15);
+}
+body[data-theme="girl"] .jar-btn { backdrop-filter: blur(8px); transition: all 0.2s ease; }
+body[data-theme="girl"] .jar-btn:hover { background: rgba(255, 255, 255, 0.35); }
+body[data-theme="girl"] .dream-progress-fill {
+  background: linear-gradient(90deg, #f472b6, #a855f7);
+  box-shadow: 0 0 8px rgba(236, 72, 153, 0.3);
+}
 body[data-theme="girl"] .stat-value { color: var(--primary); text-shadow: 0 6px 22px rgba(236, 72, 153, 0.18); }
-body[data-theme="girl"] .profile-avatar { background: linear-gradient(135deg, #f472b6, #a855f7); }
+body[data-theme="girl"] .profile-avatar {
+  background: linear-gradient(135deg, #f472b6, #a855f7);
+  box-shadow: 0 0 0 5px rgba(244, 114, 182, 0.15), 0 18px 40px rgba(236, 72, 153, 0.20);
+}
 body[data-theme="girl"] .toast { background: linear-gradient(135deg, #be185d, #a855f7); }
-body[data-theme="girl"] .calendar-day.today { border-color: var(--primary); }
-body[data-theme="girl"] .badge-tile.unlocked { background: linear-gradient(140deg, #fce7f3, white); border: 1px solid rgba(236, 72, 153, 0.32); }
+body[data-theme="girl"] .modal-overlay { background: rgba(74, 4, 78, 0.20); backdrop-filter: blur(12px); }
+body[data-theme="girl"] .modal {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(24px) saturate(1.3);
+}
+body[data-theme="girl"] .calendar-day { transition: all 0.18s ease; }
+body[data-theme="girl"] .calendar-day:hover { transform: scale(1.1); background: rgba(252, 231, 243, 0.5); }
+body[data-theme="girl"] .calendar-day.today { border-color: var(--primary); box-shadow: 0 0 8px rgba(236, 72, 153, 0.2); }
+body[data-theme="girl"] .badge-tile {
+  transition: all 0.25s cubic-bezier(.2,.7,.2,1.2);
+}
+body[data-theme="girl"] .badge-tile:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 14px 36px rgba(236, 72, 153, 0.14);
+}
+body[data-theme="girl"] .badge-tile.unlocked {
+  background: linear-gradient(140deg, rgba(252, 231, 243, 0.6), rgba(255, 255, 255, 0.7));
+  border: 1px solid rgba(236, 72, 153, 0.25);
+}
+body[data-theme="girl"] .badge-tile.unlocked .icon {
+  filter: drop-shadow(0 4px 10px rgba(236, 72, 153, 0.3));
+  animation: floatBadge 3.4s ease-in-out infinite;
+}
+@keyframes floatBadge { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+
+/* xp bar candy gradient */
+body[data-theme="girl"] .xp-bar-fill {
+  background: linear-gradient(90deg, #f9a8d4, #ec4899, #a855f7);
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+}
+
+/* sparkle on achievement strip */
+body[data-theme="girl"] .achievement-pill {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  position: relative; overflow: hidden;
+}
+body[data-theme="girl"] .achievement-pill::after {
+  content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: conic-gradient(from 0deg, transparent, rgba(236, 72, 153, 0.06), transparent, rgba(168, 85, 247, 0.06), transparent);
+  animation: shimmerSpin 8s linear infinite;
+}
+@keyframes shimmerSpin { to { transform: rotate(360deg); } }

@@ -1,4 +1,4 @@
-/* ============ THEME: ANIME · 漫画高饱和 (manga / pop) ============ */
+/* ============ THEME: ANIME · 漫画热血 — manga pop art / flat bold ============ */
 body[data-theme="anime"] {
   --bg: #fef9c3;
   --card: #ffffff;
@@ -19,11 +19,41 @@ body[data-theme="anime"] {
   --shadow-lg: 8px 8px 0 #111827;
 }
 
+/* halftone dots + diagonal stripe background */
 body[data-theme="anime"] {
   background:
-    repeating-linear-gradient(135deg, rgba(255,255,255,0.7) 0 12px, rgba(254,243,199,0.7) 12px 24px),
+    radial-gradient(circle, rgba(17, 24, 39, 0.05) 1px, transparent 1px),
+    repeating-linear-gradient(135deg, rgba(255,255,255,0.6) 0 12px, rgba(254,243,199,0.6) 12px 24px),
     linear-gradient(180deg, #fef9c3, #fde68a);
+  background-size: 16px 16px, 24px 24px, 100% 100%;
   color: var(--text);
+}
+
+/* speed line burst decoration */
+body[data-theme="anime"]::before {
+  content: ''; position: fixed; pointer-events: none; z-index: 0;
+  width: 300px; height: 300px;
+  top: -80px; right: -80px;
+  background:
+    repeating-conic-gradient(
+      rgba(239, 68, 68, 0.06) 0deg 4deg,
+      transparent 4deg 20deg
+    );
+  border-radius: 50%;
+  animation: speedBurst 20s linear infinite;
+}
+@keyframes speedBurst { to { transform: rotate(360deg); } }
+
+/* action star */
+body[data-theme="anime"]::after {
+  content: '💥'; position: fixed; pointer-events: none; z-index: 0;
+  font-size: 28px; opacity: 0.15;
+  bottom: 15%; left: 8%;
+  animation: starPop 4s ease-in-out infinite;
+}
+@keyframes starPop {
+  0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.15; }
+  50% { transform: scale(1.2) rotate(10deg); opacity: 0.25; }
 }
 
 body[data-theme="anime"] .auth-title {
@@ -34,11 +64,15 @@ body[data-theme="anime"] .auth-title {
 }
 body[data-theme="anime"] .auth-logo {
   width: 96px; height: 96px; border-radius: 24px; display: flex; align-items: center; justify-content: center;
-  background: #facc15;
-  border: 3px solid #111827;
+  background: #facc15; border: 3px solid #111827;
   box-shadow: 6px 6px 0 #111827;
   font-size: 52px;
-  animation: floatBadge 2.6s ease-in-out infinite;
+  animation: mangaBounce 2.6s ease-in-out infinite;
+}
+@keyframes mangaBounce {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-10px) rotate(-3deg); }
+  75% { transform: translateY(-4px) rotate(3deg); }
 }
 body[data-theme="anime"] .auth-subtitle { color: var(--text); font-weight: 800; }
 body[data-theme="anime"] .auth-form,
@@ -54,6 +88,14 @@ body[data-theme="anime"] .progress-section {
   border: 2.5px solid #111827;
   box-shadow: 5px 5px 0 #111827;
   border-radius: 16px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+/* comic press effect */
+body[data-theme="anime"] .card:hover,
+body[data-theme="anime"] .stat-card:hover,
+body[data-theme="anime"] .quest-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 #111827;
 }
 body[data-theme="anime"] .auth-input,
 body[data-theme="anime"] .modal-input,
@@ -61,6 +103,15 @@ body[data-theme="anime"] .dream-input,
 body[data-theme="anime"] .entry-input,
 body[data-theme="anime"] .tag-select {
   background: white; border: 2px solid #111827; border-radius: 10px;
+  transition: all 0.12s ease;
+}
+body[data-theme="anime"] .auth-input:focus,
+body[data-theme="anime"] .modal-input:focus,
+body[data-theme="anime"] .dream-input:focus,
+body[data-theme="anime"] .entry-input:focus,
+body[data-theme="anime"] .tag-select:focus {
+  box-shadow: 3px 3px 0 #ef4444;
+  border-color: #ef4444;
 }
 body[data-theme="anime"] .auth-btn,
 body[data-theme="anime"] .save-btn,
@@ -70,6 +121,16 @@ body[data-theme="anime"] .onboarding-next {
   background: #ef4444; color: white; border: 2.5px solid #111827;
   box-shadow: 4px 4px 0 #111827; border-radius: 12px;
   font-weight: 900; letter-spacing: 0.5px;
+  transition: all 0.12s ease;
+  position: relative;
+}
+body[data-theme="anime"] .auth-btn:hover,
+body[data-theme="anime"] .save-btn:hover,
+body[data-theme="anime"] .modal-btn:hover,
+body[data-theme="anime"] .dream-add-btn:hover,
+body[data-theme="anime"] .onboarding-next:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #111827;
 }
 body[data-theme="anime"] .auth-btn:active,
 body[data-theme="anime"] .save-btn:active,
@@ -77,32 +138,166 @@ body[data-theme="anime"] .modal-btn:active,
 body[data-theme="anime"] .dream-add-btn:active {
   transform: translate(2px, 2px); box-shadow: 2px 2px 0 #111827;
 }
-body[data-theme="anime"] .header { background: #facc15; border-bottom: 2.5px solid #111827; box-shadow: 0 4px 0 #111827; }
-body[data-theme="anime"] .header h1 { color: var(--text); font-weight: 900; text-shadow: 2px 2px 0 #ef4444; -webkit-text-stroke: 0.5px #111827; }
-body[data-theme="anime"] .streak-badge { background: #ef4444; color: white; border: 2px solid #111827; box-shadow: 2px 2px 0 #111827; font-weight: 900; }
-body[data-theme="anime"] .quote-card { background: #38bdf8; color: white; border: 2.5px solid #111827; box-shadow: 5px 5px 0 #111827; }
-body[data-theme="anime"] .quote-text { font-weight: 800; text-shadow: 1.5px 1.5px 0 rgba(0,0,0,0.4); }
+body[data-theme="anime"] .header {
+  background: #facc15; border-bottom: 2.5px solid #111827;
+  box-shadow: 0 4px 0 #111827;
+}
+body[data-theme="anime"] .header h1 {
+  color: var(--text); font-weight: 900;
+  text-shadow: 2px 2px 0 #ef4444;
+  -webkit-text-stroke: 0.5px #111827;
+}
+body[data-theme="anime"] .streak-badge {
+  background: #ef4444; color: white; border: 2px solid #111827;
+  box-shadow: 2px 2px 0 #111827; font-weight: 900;
+}
+body[data-theme="anime"] .quote-card {
+  background: #38bdf8; color: white; border: 2.5px solid #111827;
+  box-shadow: 5px 5px 0 #111827;
+  position: relative; overflow: hidden;
+}
+/* manga action lines on quote */
+body[data-theme="anime"] .quote-card::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-conic-gradient(
+    rgba(255, 255, 255, 0.06) 0deg 3deg,
+    transparent 3deg 15deg
+  );
+  background-position: center;
+}
+body[data-theme="anime"] .quote-text { font-weight: 800; text-shadow: 1.5px 1.5px 0 rgba(0,0,0,0.4); position: relative; z-index: 1; }
+body[data-theme="anime"] .hero-card {
+  background: linear-gradient(140deg, #ef4444 0%, #facc15 100%);
+  border: 2.5px solid #111827;
+  box-shadow: 6px 6px 0 #111827;
+  position: relative;
+}
+/* action starburst on hero */
+body[data-theme="anime"] .hero-card::before {
+  content: '⚡'; position: absolute; top: 8px; right: 12px;
+  font-size: 22px; z-index: 2;
+  animation: boltFlash 2s ease-in-out infinite;
+}
+@keyframes boltFlash {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.15) rotate(5deg); }
+}
 body[data-theme="anime"] .progress-ring-bg { stroke: #111827; stroke-width: 6; }
 body[data-theme="anime"] .progress-ring-fill { stroke: #ef4444; stroke-width: 6; }
 body[data-theme="anime"] .progress-center { color: var(--text); font-weight: 900; }
-body[data-theme="anime"] .entry-row { background: #fef9c3; border: 2px solid #111827; border-radius: 12px; padding: 8px; }
+body[data-theme="anime"] .entry-row {
+  background: #fef9c3; border: 2px solid #111827;
+  border-radius: 12px; padding: 8px;
+  transition: all 0.12s ease;
+}
+body[data-theme="anime"] .entry-row:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 #111827;
+}
 body[data-theme="anime"] .entry-number { background: #facc15; color: var(--text); border: 2px solid #111827; }
-body[data-theme="anime"] .entry-number.filled { background: #22c55e; color: white; }
-body[data-theme="anime"] .entry-add-btn { border: 2.5px dashed #111827; color: var(--text); font-weight: 900; background: white; }
+body[data-theme="anime"] .entry-number.filled { background: #22c55e; color: white; box-shadow: 2px 2px 0 #111827; }
+body[data-theme="anime"] .entry-add-btn {
+  border: 2.5px dashed #111827; color: var(--text); font-weight: 900; background: white;
+  transition: all 0.12s ease;
+}
+body[data-theme="anime"] .entry-add-btn:hover {
+  background: #facc15;
+  border-style: solid;
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0 #111827;
+}
 body[data-theme="anime"] .tab-bar {
   bottom: 10px; width: calc(100% - 24px); border: 2.5px solid #111827; border-radius: 18px;
   background: white; box-shadow: 5px 5px 0 #111827;
 }
-body[data-theme="anime"] .tab-item.active { color: white; background: #ef4444; border-radius: 12px; border: 2px solid #111827; font-weight: 900; }
-body[data-theme="anime"] .jar-card { background: #facc15; color: var(--text); border: 2.5px solid #111827; box-shadow: 5px 5px 0 #111827; }
+body[data-theme="anime"] .tab-item { font-weight: 800; transition: all 0.12s ease; }
+body[data-theme="anime"] .tab-item.active {
+  color: white; background: #ef4444; border-radius: 12px;
+  border: 2px solid #111827; font-weight: 900;
+  box-shadow: 2px 2px 0 #111827;
+}
+body[data-theme="anime"] .jar-card {
+  background: #facc15; color: var(--text); border: 2.5px solid #111827;
+  box-shadow: 5px 5px 0 #111827;
+}
 body[data-theme="anime"] .jar-amount { font-weight: 900; -webkit-text-stroke: 1px #111827; }
-body[data-theme="anime"] .jar-btn { background: white; color: var(--text); border: 2px solid #111827; font-weight: 800; }
+body[data-theme="anime"] .jar-btn {
+  background: white; color: var(--text); border: 2px solid #111827; font-weight: 800;
+  transition: all 0.12s ease;
+}
+body[data-theme="anime"] .jar-btn:hover {
+  background: #ef4444; color: white;
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0 #111827;
+}
 body[data-theme="anime"] .dream-progress-fill { background: #ef4444; }
-body[data-theme="anime"] .stat-value { color: var(--text); font-weight: 900; -webkit-text-stroke: 1px #111827; }
-body[data-theme="anime"] .profile-avatar { background: #facc15; color: var(--text); border: 2.5px solid #111827; box-shadow: 4px 4px 0 #111827; font-weight: 900; }
-body[data-theme="anime"] .toast { background: #111827; color: #facc15; border: 2px solid #facc15; box-shadow: 4px 4px 0 #facc15; font-weight: 900; }
-body[data-theme="anime"] .calendar-day { font-weight: 800; }
+body[data-theme="anime"] .dream-check.done {
+  background: #22c55e; border-color: #111827;
+  box-shadow: 2px 2px 0 #111827;
+}
+body[data-theme="anime"] .stat-value {
+  color: var(--text); font-weight: 900;
+  -webkit-text-stroke: 1px #111827;
+  text-shadow: 2px 2px 0 #facc15;
+}
+body[data-theme="anime"] .profile-avatar {
+  background: #facc15; color: var(--text); border: 2.5px solid #111827;
+  box-shadow: 4px 4px 0 #111827; font-weight: 900;
+}
+body[data-theme="anime"] .toast {
+  background: #111827; color: #facc15; border: 2px solid #facc15;
+  box-shadow: 4px 4px 0 #facc15; font-weight: 900;
+}
+body[data-theme="anime"] .calendar-day { font-weight: 800; transition: all 0.12s ease; }
+body[data-theme="anime"] .calendar-day:hover {
+  background: #facc15; transform: scale(1.12);
+  box-shadow: 2px 2px 0 #111827;
+}
 body[data-theme="anime"] .calendar-day.today { border: 2.5px solid #ef4444; }
-body[data-theme="anime"] .badge-tile.unlocked { background: #fef9c3; border: 2.5px solid #111827; }
+body[data-theme="anime"] .badge-tile {
+  transition: all 0.12s ease;
+}
+body[data-theme="anime"] .badge-tile:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 7px 7px 0 #111827;
+}
+body[data-theme="anime"] .badge-tile.unlocked {
+  background: #fef9c3; border: 2.5px solid #111827;
+}
 body[data-theme="anime"] .badge-tile.unlocked .icon { filter: none; }
-body[data-theme="anime"] .modal { border: 2.5px solid #111827; border-radius: 20px 20px 0 0; box-shadow: 0 -6px 0 #111827; }
+body[data-theme="anime"] .modal {
+  border: 2.5px solid #111827; border-radius: 20px 20px 0 0;
+  box-shadow: 0 -6px 0 #111827;
+}
+body[data-theme="anime"] .modal-overlay { background: rgba(17, 24, 39, 0.5); }
+body[data-theme="anime"] .onboarding-overlay { background: #facc15; }
+body[data-theme="anime"] .onboarding-slide h2 {
+  font-weight: 900;
+  text-shadow: 2px 2px 0 #ef4444;
+  -webkit-text-stroke: 0.5px #111827;
+}
+body[data-theme="anime"] .onboarding-next {
+  background: #ef4444; border: 2.5px solid #111827;
+  box-shadow: 4px 4px 0 #111827;
+}
+body[data-theme="anime"] .onboarding-skip {
+  border: 2px solid #111827; font-weight: 800;
+}
+
+/* xp bar bold tricolor */
+body[data-theme="anime"] .xp-bar {
+  background: white; border: 2px solid #111827;
+  border-radius: 999px;
+}
+body[data-theme="anime"] .xp-bar-fill {
+  background: linear-gradient(90deg, #facc15, #ef4444, #22c55e);
+  border-radius: 999px;
+}
+
+/* star burst decoration on stat cards */
+body[data-theme="anime"] .stat-card { position: relative; overflow: hidden; }
+body[data-theme="anime"] .stat-card::before {
+  content: '★'; position: absolute; top: -4px; right: -4px;
+  font-size: 40px; color: rgba(250, 204, 21, 0.15);
+  transform: rotate(15deg);
+}
