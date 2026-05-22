@@ -26,21 +26,33 @@
 
 ```bash
 cp .env.example .env
-# 编辑 .env，设置强密码和 JWT 密钥
+# 编辑 .env，设置外部 PostgreSQL 连接信息、强密码和 JWT 密钥
 # JWT_SECRET 建议：openssl rand -hex 32
 ```
 
-### 2. Docker Compose 启动（推荐）
+### 2. Docker Compose / Portainer 启动（推荐）
 
 ```bash
 docker compose up -d --build
 ```
 
-应用运行在 `http://localhost:3800`（可在 `.env` 中修改 `APP_PORT`）。
+Compose 只部署应用容器，PostgreSQL 使用外部数据库。应用运行在 `http://localhost:3800`（可通过 `APP_PORT` 修改宿主机端口）。
+
+在 Portainer Stack 中部署时，把以下变量填入 Stack 的环境变量即可：
+
+```env
+APP_PORT=3800
+DB_HOST=你的PostgreSQL主机
+DB_PORT=5432
+DB_NAME=success_diary
+DB_USER=diary
+DB_PASSWORD=强密码
+JWT_SECRET=至少16字符的随机字符串
+```
 
 ### 3. 本地开发
 
-需要本地 PostgreSQL 实例（或使用 docker compose 中的数据库）：
+需要本地或外部 PostgreSQL 实例：
 
 ```bash
 cd server
@@ -48,18 +60,19 @@ npm install
 npm run dev
 ```
 
-后端默认连接 `localhost:5432` 上的 PostgreSQL，默认数据库用户为 `postgres`。如果使用 `docker compose` 中的数据库做本地开发，请设置 `DB_HOST=localhost`、`DB_PORT=5433`、`DB_USER=diary`、`DB_PASSWORD` 和 `JWT_SECRET`。
+后端默认连接 `localhost:5432` 上的 PostgreSQL，默认数据库用户为 `postgres`。本地开发请按你的数据库实际信息设置 `DB_HOST`、`DB_PORT`、`DB_USER`、`DB_PASSWORD` 和 `JWT_SECRET`。
 
 ## 环境变量说明
 
 | 变量 | 必填 | 默认值 | 说明 |
 |------|------|--------|------|
 | `DB_NAME` | 否 | `success_diary` | 数据库名 |
-| `DB_USER` | 否 | `diary` / 本地代码默认 `postgres` | 数据库用户 |
+| `DB_HOST` | Docker/Portainer 必填 | — | 外部 PostgreSQL 主机 |
+| `DB_PORT` | 否 | `5432` | 外部 PostgreSQL 端口 |
+| `DB_USER` | Docker/Portainer 必填 | 本地代码默认 `postgres` | 数据库用户 |
 | `DB_PASSWORD` | **是** | — | 数据库密码 |
 | `JWT_SECRET` | **是** | — | JWT 签名密钥（≥16 字符） |
 | `APP_PORT` | 否 | `3800` | 宿主机映射端口 |
-| `PG_PORT` | 否 | `5433` | PostgreSQL 宿主机映射端口 |
 
 > 生产环境中 `DB_PASSWORD` 和 `JWT_SECRET` 未设置时，应用将拒绝启动。
 
@@ -109,7 +122,7 @@ scp -r . user@192.168.1.6:/opt/success-diary/
 ssh user@192.168.1.6
 cd /opt/success-diary
 
-# 配置生产环境变量
+# 配置生产环境变量（外部 PostgreSQL）
 cp .env.example .env
 vim .env  # 设置强密码
 
