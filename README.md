@@ -50,6 +50,7 @@ DB_PASSWORD=强密码
 JWT_SECRET=至少16字符的随机字符串
 TURNSTILE_SITE_KEY=Cloudflare Turnstile 站点密钥
 TURNSTILE_SECRET_KEY=Cloudflare Turnstile 密钥
+TRUST_PROXY=1
 ```
 
 ### 3. 本地开发
@@ -76,6 +77,7 @@ npm run dev
 | `JWT_SECRET` | **是** | — | JWT 签名密钥（≥16 字符） |
 | `TURNSTILE_SITE_KEY` | **是** | — | Cloudflare Turnstile 前端站点密钥 |
 | `TURNSTILE_SECRET_KEY` | **是** | — | Cloudflare Turnstile 服务端验证密钥 |
+| `TRUST_PROXY` | 否 | `1` | Express 信任的反向代理层数；NPM -> 应用 通常为 `1` |
 | `APP_PORT` | 否 | `3800` | 宿主机映射端口 |
 
 > 生产环境中 `DB_PASSWORD`、`JWT_SECRET`、`TURNSTILE_SITE_KEY` 和 `TURNSTILE_SECRET_KEY` 未设置时，Compose 将拒绝启动。

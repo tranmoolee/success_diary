@@ -16,6 +16,7 @@ const { getTurnstileSiteKey } = require('./turnstile');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+app.set('trust proxy', Number(process.env.TRUST_PROXY || 1));
 
 function escapeHtml(value) {
   return String(value ?? '')

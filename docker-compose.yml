@@ -10,6 +10,7 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - TRUST_PROXY=${TRUST_PROXY:-1}
       - DB_HOST=${DB_HOST:?请在 Portainer 环境变量中设置外部 PostgreSQL 主机}
       - DB_PORT=${DB_PORT:-5432}
       - DB_NAME=${DB_NAME:-success_diary}
