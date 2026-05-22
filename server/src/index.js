@@ -16,8 +16,10 @@ const { getTurnstileSiteKey } = require('./turnstile');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-app.set('trust proxy', Number(process.env.TRUST_PROXY || 1));
+const TRUST_PROXY = Number(process.env.TRUST_PROXY || 1);
+app.set('trust proxy', TRUST_PROXY);
 const PLAUSIBLE_SCRIPT_URL = process.env.PLAUSIBLE_SCRIPT_URL || 'https://plausible.io/js/script.js';
+const PLAUSIBLE_DOMAIN = process.env.PLAUSIBLE_DOMAIN || '';
 
 function getUrlOrigin(value) {
   try {
@@ -28,6 +30,16 @@ function getUrlOrigin(value) {
 }
 
 const plausibleOrigin = getUrlOrigin(PLAUSIBLE_SCRIPT_URL);
+
+function logRuntimeConfig() {
+  console.log('[config] trustProxy:', TRUST_PROXY);
+  console.log('[config] turnstile:', getTurnstileSiteKey() ? 'enabled' : 'disabled: TURNSTILE_SITE_KEY missing');
+  console.log('[config] turnstileSecret:', process.env.TURNSTILE_SECRET_KEY ? 'configured' : 'missing');
+  console.log('[config] plausible:', PLAUSIBLE_DOMAIN ? `enabled domain=${PLAUSIBLE_DOMAIN} script=${PLAUSIBLE_SCRIPT_URL}` : 'disabled: PLAUSIBLE_DOMAIN empty');
+  if (PLAUSIBLE_DOMAIN && !plausibleOrigin) {
+    console.warn('[config] plausible script URL is invalid and may be blocked by CSP:', PLAUSIBLE_SCRIPT_URL);
+  }
+}
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -82,8 +94,8 @@ app.use(express.static(path.join(__dirname, '../../public')));
 app.get('/api/config', (req, res) => {
   res.json({
     turnstileSiteKey: getTurnstileSiteKey(),
-    plausibleDomain: process.env.PLAUSIBLE_DOMAIN || '',
-    plausibleScriptUrl: process.env.PLAUSIBLE_DOMAIN ? PLAUSIBLE_SCRIPT_URL : '',
+    plausibleDomain: PLAUSIBLE_DOMAIN,
+    plausibleScriptUrl: PLAUSIBLE_DOMAIN ? PLAUSIBLE_SCRIPT_URL : '',
   });
 });
 
@@ -207,6 +219,7 @@ app.use((err, req, res, next) => {
 async function start() {
   try {
     await initDB();
+    logRuntimeConfig();
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`成功日记 API 运行在 http://0.0.0.0:${PORT}`);
     });

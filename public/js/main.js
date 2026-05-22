@@ -2,18 +2,36 @@
 async function initAnalytics() {
   try {
     const res = await fetch('/api/config');
-    if (!res.ok) return;
+    if (!res.ok) {
+      console.warn('[analytics] config request failed:', res.status);
+      return;
+    }
     const config = await res.json();
-    if (!config.plausibleDomain || !config.plausibleScriptUrl) return;
-    if (document.querySelector('script[data-plausible-loaded="true"]')) return;
+    if (!config.plausibleDomain || !config.plausibleScriptUrl) {
+      console.info('[analytics] Plausible disabled: PLAUSIBLE_DOMAIN is empty');
+      return;
+    }
+    if (document.querySelector('script[data-plausible-loaded="true"]')) {
+      console.info('[analytics] Plausible already loaded');
+      return;
+    }
 
     const script = document.createElement('script');
     script.defer = true;
     script.src = config.plausibleScriptUrl;
     script.dataset.domain = config.plausibleDomain;
     script.dataset.plausibleLoaded = 'true';
+    script.addEventListener('load', () => {
+      console.info('[analytics] Plausible loaded:', config.plausibleDomain, config.plausibleScriptUrl);
+    });
+    script.addEventListener('error', () => {
+      console.warn('[analytics] Plausible failed to load:', config.plausibleScriptUrl);
+    });
     document.head.appendChild(script);
-  } catch {}
+    console.info('[analytics] Plausible loading:', config.plausibleDomain, config.plausibleScriptUrl);
+  } catch (err) {
+    console.warn('[analytics] init failed:', err.message);
+  }
 }
 
 function switchTab(name) {

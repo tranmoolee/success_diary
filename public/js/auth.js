@@ -44,6 +44,7 @@ function resetTurnstile() {
 function toggleAuthMode() {
   isLoginMode = !isLoginMode;
   el('registerFields').style.display = isLoginMode ? 'none' : 'block';
+  el('turnstileContainer').style.display = isLoginMode ? 'none' : 'flex';
   el('authBtn').textContent = isLoginMode ? '登录' : '注册';
   el('authSwitchText').textContent = isLoginMode ? '还没有账号？' : '已有账号？';
   el('authSwitchLink').textContent = isLoginMode ? '注册' : '登录';

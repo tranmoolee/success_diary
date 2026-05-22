@@ -62,12 +62,12 @@
     <div class="auth-error" id="authError"></div>
     <div id="registerFields" style="display:none;">
       <input class="auth-input" id="authDisplayName" placeholder="昵称" />
-      <div class="auth-turnstile" id="turnstileContainer">
-        <div id="turnstileWidget"></div>
-      </div>
     </div>
     <input class="auth-input" id="authUsername" placeholder="用户名" autocomplete="username" />
     <input class="auth-input" id="authPassword" type="password" placeholder="密码" autocomplete="current-password" />
+    <div class="auth-turnstile" id="turnstileContainer" style="display:none;">
+      <div id="turnstileWidget"></div>
+    </div>
     <button class="auth-btn" id="authBtn" onclick="handleAuth()">登录</button>
     <div class="auth-switch">
       <span id="authSwitchText">还没有账号？</span>

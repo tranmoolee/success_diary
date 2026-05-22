@@ -86,6 +86,8 @@ npm run dev
 
 > 生产环境中 `DB_PASSWORD`、`JWT_SECRET`、`TURNSTILE_SITE_KEY` 和 `TURNSTILE_SECRET_KEY` 未设置时，Compose 将拒绝启动。
 
+启动日志会输出 Turnstile 和 Plausible 是否启用。Plausible 前端加载状态会输出到浏览器控制台，日志前缀为 `[analytics]`。
+
 ## API 概览
 
 所有接口前缀 `/api`，需 `Authorization: Bearer <token>` 头（除注册和登录外）。
