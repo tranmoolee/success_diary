@@ -4,8 +4,25 @@ const { z } = require('zod');
 const VALID_TAGS = ['学习', '工作', '社交', '健康', '创意', '理财', '生活'];
 
 // ========== 通用 ==========
-const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, '日期格式错误 (YYYY-MM-DD)');
-const yearMonthSchema = z.string().regex(/^\d{4}-\d{2}$/, '年月格式错误 (YYYY-MM)');
+function isValidDateString(value) {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return false;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const d = new Date(Date.UTC(year, month - 1, day));
+  return d.getUTCFullYear() === year && d.getUTCMonth() === month - 1 && d.getUTCDate() === day;
+}
+
+const dateSchema = z.string()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, '日期格式错误 (YYYY-MM-DD)')
+  .refine(isValidDateString, '日期不存在');
+const yearMonthSchema = z.string()
+  .regex(/^\d{4}-\d{2}$/, '年月格式错误 (YYYY-MM)')
+  .refine(value => {
+    const [, month] = value.split('-').map(Number);
+    return month >= 1 && month <= 12;
+  }, '月份不存在');
 const tagSchema = z.enum(VALID_TAGS, { errorMap: () => ({ message: `标签必须是: ${VALID_TAGS.join(', ')}` }) });
 
 // ========== Auth ==========
@@ -66,6 +83,11 @@ const savingsSchema = z.object({
   note: z.string().max(200, '备注最多200字符').default(''),
 });
 
+// ========== Shares ==========
+const createShareSchema = z.object({
+  entryDate: dateSchema,
+});
+
 // ========== 中间件工厂 ==========
 function validate(schema) {
   return (req, res, next) => {
@@ -105,6 +127,7 @@ module.exports = {
   createDreamSchema,
   updateDreamSchema,
   savingsSchema,
+  createShareSchema,
   achievementsBatchSchema,
   validate,
   validateParams,

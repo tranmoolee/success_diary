@@ -1,11 +1,41 @@
-// ============ SHARE CARD ============
+// ============ SHARE CARD WITH QR CODE ============
+
+function generateQRDataURL(text) {
+  var qr = qrcode(0, 'M');
+  qr.addData(text);
+  qr.make();
+  return qr.createDataURL(4, 0);
+}
+
 async function generateShareCard() {
   const entries = currentEntryDraft();
   if (entries.length === 0) { showToast('先记录一些内容再分享吧'); return; }
 
-  const stats = cachedStats || {};
+  showToast('正在生成分享卡片...');
+
+  let stats = cachedStats || {};
   const now = new Date();
   const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+  const entryDate = todayKey();
+
+  let shareUrl = '';
+  let shareCode = '';
+  try {
+    await api(`/entries/${entryDate}`, { method: 'PUT', body: JSON.stringify({ entries }) });
+    await loadStatsBackground();
+    stats = cachedStats || stats;
+    const shareData = await api('/shares', {
+      method: 'POST',
+      body: JSON.stringify({ entryDate }),
+    });
+    shareUrl = shareData.shareUrl;
+    shareCode = shareData.shareCode;
+  } catch (err) {
+    showToast('生成分享链接失败: ' + err.message);
+    return;
+  }
+
+  const qrDataUrl = generateQRDataURL(shareUrl);
 
   const card = el('shareCard');
   card.innerHTML = `
@@ -26,6 +56,13 @@ async function generateShareCard() {
           <div class="share-card-tag">${escapeHtml(e.tag)}</div>
         </div>`).join('')}
     </div>
+    <div class="share-card-qr">
+      <img src="${qrDataUrl}" class="share-qr-img" />
+      <div class="share-qr-info">
+        <div class="share-qr-label">扫码围观 · 点击一起开始记录</div>
+        <div class="share-qr-url">${shareUrl}</div>
+      </div>
+    </div>
     <div class="share-card-footer">
       <div class="streak">🔥 连续 ${stats.currentStreak || 0} 天</div>
       <div class="brand">成功日记 · 小狗钱钱</div>
@@ -38,8 +75,7 @@ async function generateShareCard() {
   container.style.zIndex = '999';
 
   try {
-    showToast('正在生成分享卡片...');
-    await new Promise(r => setTimeout(r, 100));
+    await new Promise(r => setTimeout(r, 200));
     const canvas = await html2canvas(card, { scale: 2, backgroundColor: null, useCORS: true, logging: false });
     const imgUrl = canvas.toDataURL('image/png');
     el('sharePreviewImg').src = imgUrl;

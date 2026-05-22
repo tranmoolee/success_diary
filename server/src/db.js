@@ -78,6 +78,22 @@ async function initDB() {
       );
 
       CREATE INDEX IF NOT EXISTS idx_user_achievements_user ON user_achievements(user_id);
+
+      CREATE TABLE IF NOT EXISTS shares (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        share_code VARCHAR(12) UNIQUE NOT NULL,
+        entry_date DATE NOT NULL,
+        entry_count INTEGER DEFAULT 0,
+        entries_snapshot JSONB NOT NULL DEFAULT '[]'::jsonb,
+        view_count INTEGER DEFAULT 0,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      ALTER TABLE shares ADD COLUMN IF NOT EXISTS entries_snapshot JSONB NOT NULL DEFAULT '[]'::jsonb;
+
+      CREATE INDEX IF NOT EXISTS idx_shares_code ON shares(share_code);
+      CREATE INDEX IF NOT EXISTS idx_shares_user ON shares(user_id);
     `);
     console.log('数据库初始化完成');
   } finally {

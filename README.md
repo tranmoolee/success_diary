@@ -45,17 +45,17 @@ docker compose up -d --build
 ```bash
 cd server
 npm install
-npm run dev   # nodemon 热重载
+npm run dev
 ```
 
-后端默认连接 `localhost:5433` 上的 PostgreSQL，首次启动会自动建表。
+后端默认连接 `localhost:5432` 上的 PostgreSQL，默认数据库用户为 `postgres`。如果使用 `docker compose` 中的数据库做本地开发，请设置 `DB_HOST=localhost`、`DB_PORT=5433`、`DB_USER=diary`、`DB_PASSWORD` 和 `JWT_SECRET`。
 
 ## 环境变量说明
 
 | 变量 | 必填 | 默认值 | 说明 |
 |------|------|--------|------|
 | `DB_NAME` | 否 | `success_diary` | 数据库名 |
-| `DB_USER` | 否 | `diary` | 数据库用户 |
+| `DB_USER` | 否 | `diary` / 本地代码默认 `postgres` | 数据库用户 |
 | `DB_PASSWORD` | **是** | — | 数据库密码 |
 | `JWT_SECRET` | **是** | — | JWT 签名密钥（≥16 字符） |
 | `APP_PORT` | 否 | `3800` | 宿主机映射端口 |
@@ -71,17 +71,20 @@ npm run dev   # nodemon 热重载
 |------|------|------|
 | POST | `/api/auth/register` | 注册 |
 | POST | `/api/auth/login` | 登录 |
-| GET/PUT | `/api/auth/profile` | 获取/更新用户信息 |
-| PUT | `/api/auth/password` | 修改密码 |
+| GET | `/api/auth/me` | 获取当前用户信息 |
+| PATCH | `/api/auth/profile` | 更新用户昵称/主题 |
+| PATCH | `/api/auth/password` | 修改密码 |
 | GET | `/api/entries/:date` | 获取某日条目 |
-| POST | `/api/entries/:date` | 保存某日条目 |
-| GET | `/api/entries/calendar/:yearMonth` | 月历已记录日期 |
+| PUT | `/api/entries/:date` | 保存某日条目 |
+| GET | `/api/entries/month/:yearMonth` | 月历已记录日期 |
 | GET/POST | `/api/dreams` | 梦想列表/新增 |
-| PUT | `/api/dreams/:id` | 更新梦想 |
+| PATCH | `/api/dreams/:id` | 更新梦想 |
 | DELETE | `/api/dreams/:id` | 删除梦想 |
 | GET | `/api/savings` | 储蓄记录 |
 | POST | `/api/savings` | 存入/取出 |
 | GET | `/api/stats` | 综合统计 |
+| POST | `/api/shares` | 创建当天记录分享链接 |
+| GET | `/api/shares/stats` | 分享统计 |
 
 ## 安全措施
 
