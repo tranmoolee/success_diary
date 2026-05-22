@@ -51,6 +51,8 @@ JWT_SECRET=至少16字符的随机字符串
 TURNSTILE_SITE_KEY=Cloudflare Turnstile 站点密钥
 TURNSTILE_SECRET_KEY=Cloudflare Turnstile 密钥
 TRUST_PROXY=1
+PLAUSIBLE_DOMAIN=你的统计域名
+PLAUSIBLE_SCRIPT_URL=https://plausible.io/js/script.js
 ```
 
 ### 3. 本地开发
@@ -78,6 +80,8 @@ npm run dev
 | `TURNSTILE_SITE_KEY` | **是** | — | Cloudflare Turnstile 前端站点密钥 |
 | `TURNSTILE_SECRET_KEY` | **是** | — | Cloudflare Turnstile 服务端验证密钥 |
 | `TRUST_PROXY` | 否 | `1` | Express 信任的反向代理层数；NPM -> 应用 通常为 `1` |
+| `PLAUSIBLE_DOMAIN` | 否 | 空 | Plausible 统计域名；留空则不加载统计 |
+| `PLAUSIBLE_SCRIPT_URL` | 否 | `https://plausible.io/js/script.js` | Plausible 脚本地址，支持自托管 |
 | `APP_PORT` | 否 | `3800` | 宿主机映射端口 |
 
 > 生产环境中 `DB_PASSWORD`、`JWT_SECRET`、`TURNSTILE_SITE_KEY` 和 `TURNSTILE_SECRET_KEY` 未设置时，Compose 将拒绝启动。

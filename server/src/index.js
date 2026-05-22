@@ -17,6 +17,17 @@ const { getTurnstileSiteKey } = require('./turnstile');
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.set('trust proxy', Number(process.env.TRUST_PROXY || 1));
+const PLAUSIBLE_SCRIPT_URL = process.env.PLAUSIBLE_SCRIPT_URL || 'https://plausible.io/js/script.js';
+
+function getUrlOrigin(value) {
+  try {
+    return new URL(value).origin;
+  } catch {
+    return null;
+  }
+}
+
+const plausibleOrigin = getUrlOrigin(PLAUSIBLE_SCRIPT_URL);
 
 function escapeHtml(value) {
   return String(value ?? '')
@@ -32,11 +43,11 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://challenges.cloudflare.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://challenges.cloudflare.com", plausibleOrigin].filter(Boolean),
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "blob:"],
-      connectSrc: ["'self'", "https://challenges.cloudflare.com"],
+      connectSrc: ["'self'", "https://challenges.cloudflare.com", plausibleOrigin].filter(Boolean),
       frameSrc: ["'self'", "https://challenges.cloudflare.com"],
       upgradeInsecureRequests: null,
     },
@@ -71,6 +82,8 @@ app.use(express.static(path.join(__dirname, '../../public')));
 app.get('/api/config', (req, res) => {
   res.json({
     turnstileSiteKey: getTurnstileSiteKey(),
+    plausibleDomain: process.env.PLAUSIBLE_DOMAIN || '',
+    plausibleScriptUrl: process.env.PLAUSIBLE_DOMAIN ? PLAUSIBLE_SCRIPT_URL : '',
   });
 });
 

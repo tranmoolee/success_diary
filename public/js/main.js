@@ -1,4 +1,21 @@
 // ============ BOOT + GLOBAL WIRING ============
+async function initAnalytics() {
+  try {
+    const res = await fetch('/api/config');
+    if (!res.ok) return;
+    const config = await res.json();
+    if (!config.plausibleDomain || !config.plausibleScriptUrl) return;
+    if (document.querySelector('script[data-plausible-loaded="true"]')) return;
+
+    const script = document.createElement('script');
+    script.defer = true;
+    script.src = config.plausibleScriptUrl;
+    script.dataset.domain = config.plausibleDomain;
+    script.dataset.plausibleLoaded = 'true';
+    document.head.appendChild(script);
+  } catch {}
+}
+
 function switchTab(name) {
   $$('.page').forEach(p => p.classList.remove('active'));
   $$('.tab-item').forEach(t => t.classList.remove('active'));
@@ -22,6 +39,7 @@ document.querySelectorAll('.modal-overlay').forEach(m => {
 });
 
 // boot
+initAnalytics();
 document.body.dataset.theme = currentTheme;
 if (token) {
   enterApp();
