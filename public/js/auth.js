@@ -1,4 +1,46 @@
 // ============ AUTH ============
+let turnstileSiteKey = '';
+let turnstileWidgetId = null;
+
+async function initTurnstile() {
+  try {
+    const data = await api('/config');
+    turnstileSiteKey = data.turnstileSiteKey || '';
+    if (!isLoginMode) renderTurnstile();
+  } catch {
+    turnstileSiteKey = '';
+  }
+}
+
+function renderTurnstile() {
+  const target = el('turnstileWidget');
+  if (!target || isLoginMode) return;
+  if (!turnstileSiteKey) {
+    target.innerHTML = '<div class="auth-error show">人机验证未配置</div>';
+    return;
+  }
+  if (!window.turnstile) {
+    setTimeout(renderTurnstile, 200);
+    return;
+  }
+  if (turnstileWidgetId !== null) {
+    window.turnstile.reset(turnstileWidgetId);
+    return;
+  }
+  target.innerHTML = '';
+  turnstileWidgetId = window.turnstile.render(target, {
+    sitekey: turnstileSiteKey,
+    action: 'register',
+    theme: currentTheme === 'boy' ? 'dark' : 'auto',
+  });
+}
+
+function resetTurnstile() {
+  if (window.turnstile && turnstileWidgetId !== null) {
+    window.turnstile.reset(turnstileWidgetId);
+  }
+}
+
 function toggleAuthMode() {
   isLoginMode = !isLoginMode;
   el('registerFields').style.display = isLoginMode ? 'none' : 'block';
@@ -6,6 +48,7 @@ function toggleAuthMode() {
   el('authSwitchText').textContent = isLoginMode ? '还没有账号？' : '已有账号？';
   el('authSwitchLink').textContent = isLoginMode ? '注册' : '登录';
   el('authError').classList.remove('show');
+  if (!isLoginMode) renderTurnstile();
 }
 
 async function handleAuth() {
@@ -23,7 +66,18 @@ async function handleAuth() {
   try {
     const endpoint = isLoginMode ? '/auth/login' : '/auth/register';
     const body = { username, password };
-    if (!isLoginMode) body.displayName = el('authDisplayName').value.trim() || username;
+    if (!isLoginMode) {
+      const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value || '';
+      if (!turnstileToken) {
+        errEl.textContent = '请先完成人机验证';
+        errEl.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = '注册';
+        return;
+      }
+      body.displayName = el('authDisplayName').value.trim() || username;
+      body.turnstileToken = turnstileToken;
+    }
     const data = await api(endpoint, { method: 'POST', body: JSON.stringify(body) });
     token = data.token;
     currentUser = data.user;
@@ -35,6 +89,7 @@ async function handleAuth() {
   } catch (err) {
     errEl.textContent = err.message;
     errEl.classList.add('show');
+    if (!isLoginMode) resetTurnstile();
   } finally {
     btn.disabled = false;
     btn.textContent = isLoginMode ? '登录' : '注册';
@@ -49,6 +104,7 @@ function logout() {
   el('appShell').classList.remove('active');
   el('authUsername').value = '';
   el('authPassword').value = '';
+  initTurnstile();
 }
 
 async function enterApp() {

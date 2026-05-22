@@ -29,6 +29,7 @@ if (token) {
   el('authPage').classList.remove('hide');
   // for non-logged-in: still set up theme
   applyTheme(currentTheme);
+  initTurnstile();
 }
 el('authPassword').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });
 

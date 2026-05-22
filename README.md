@@ -48,6 +48,8 @@ DB_NAME=success_diary
 DB_USER=diary
 DB_PASSWORD=强密码
 JWT_SECRET=至少16字符的随机字符串
+TURNSTILE_SITE_KEY=Cloudflare Turnstile 站点密钥
+TURNSTILE_SECRET_KEY=Cloudflare Turnstile 密钥
 ```
 
 ### 3. 本地开发
@@ -72,9 +74,11 @@ npm run dev
 | `DB_USER` | Docker/Portainer 必填 | 本地代码默认 `postgres` | 数据库用户 |
 | `DB_PASSWORD` | **是** | — | 数据库密码 |
 | `JWT_SECRET` | **是** | — | JWT 签名密钥（≥16 字符） |
+| `TURNSTILE_SITE_KEY` | **是** | — | Cloudflare Turnstile 前端站点密钥 |
+| `TURNSTILE_SECRET_KEY` | **是** | — | Cloudflare Turnstile 服务端验证密钥 |
 | `APP_PORT` | 否 | `3800` | 宿主机映射端口 |
 
-> 生产环境中 `DB_PASSWORD` 和 `JWT_SECRET` 未设置时，应用将拒绝启动。
+> 生产环境中 `DB_PASSWORD`、`JWT_SECRET`、`TURNSTILE_SITE_KEY` 和 `TURNSTILE_SECRET_KEY` 未设置时，Compose 将拒绝启动。
 
 ## API 概览
 
@@ -103,6 +107,7 @@ npm run dev
 
 - 密码使用 bcrypt（12 轮）加密存储
 - JWT 密钥强制从环境变量读取，缺失则拒绝启动
+- 注册接口使用 Cloudflare Turnstile，并在服务端校验 token
 - 所有用户输入经 Zod schema 校验
 - 标签使用服务端白名单，防止 XSS
 - 前端全面 HTML 转义（escapeHtml + safeTag）

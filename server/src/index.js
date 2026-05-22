@@ -12,6 +12,7 @@ const statsRoutes = require('./routes/stats');
 const achievementsRoutes = require('./routes/achievements');
 const sharesRoutes = require('./routes/shares');
 const { authenticate } = require('./middleware/auth');
+const { getTurnstileSiteKey } = require('./turnstile');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,11 +31,12 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://challenges.cloudflare.com"],
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "blob:"],
-      connectSrc: ["'self'"],
+      connectSrc: ["'self'", "https://challenges.cloudflare.com"],
+      frameSrc: ["'self'", "https://challenges.cloudflare.com"],
       upgradeInsecureRequests: null,
     },
   },
@@ -64,6 +66,12 @@ app.use('/api/auth/register', authLimiter);
 
 // Static frontend
 app.use(express.static(path.join(__dirname, '../../public')));
+
+app.get('/api/config', (req, res) => {
+  res.json({
+    turnstileSiteKey: getTurnstileSiteKey(),
+  });
+});
 
 // API Routes
 app.use('/api/auth', authRoutes);

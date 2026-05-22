@@ -36,8 +36,9 @@ body {
 }
 
 button, input, select { -webkit-tap-highlight-color: transparent; }
-button { transition: transform 0.16s ease, box-shadow 0.16s ease, filter 0.16s ease; cursor: pointer; }
+button { transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease; cursor: pointer; }
 button:active { transform: scale(0.96); }
+a, input, select, textarea { transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease; }
 
 /* ============ AUTH PAGE ============ */
 .auth-page { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 30px; }
@@ -49,6 +50,7 @@ button:active { transform: scale(0.96); }
 .auth-input { width: 100%; padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 15px; outline: none; margin-bottom: 12px; background: white; color: var(--text); }
 .auth-input:focus { border-color: var(--primary); }
 .auth-input::placeholder { color: var(--text-muted); }
+.auth-turnstile { display: flex; justify-content: center; margin: 2px 0 12px; min-height: 65px; }
 .auth-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 4px; }
 .auth-btn:hover { background: var(--primary-dark); }
 .auth-btn:disabled { opacity: 0.5; cursor: default; }
@@ -76,7 +78,7 @@ button:active { transform: scale(0.96); }
 
 /* ============ TAB BAR ============ */
 .tab-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--card); border-top: 1px solid var(--border); display: flex; padding: 8px 0 env(safe-area-inset-bottom, 8px); z-index: 100; }
-.tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; background: none; border: none; color: var(--text-muted); font-size: 10px; cursor: pointer; transition: color 0.2s; }
+.tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 6px 0; background: none; border: none; color: var(--text-muted); font-size: 10px; cursor: pointer; transition: all 0.22s ease; }
 .tab-item.active { color: var(--primary); }
 .tab-item svg { width: 22px; height: 22px; }
 .page { display: none; }

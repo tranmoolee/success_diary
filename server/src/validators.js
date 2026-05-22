@@ -31,6 +31,7 @@ const registerSchema = z.object({
     .regex(/^[a-zA-Z0-9_一-鿿]+$/, '用户名只能包含字母、数字、下划线或中文'),
   password: z.string().min(8, '密码至少8个字符').max(128, '密码最多128字符'),
   displayName: z.string().trim().max(100, '昵称最多100字符').optional(),
+  turnstileToken: z.string().min(1, '请完成人机验证').max(4096, '人机验证已失效，请重试'),
 });
 
 const loginSchema = z.object({

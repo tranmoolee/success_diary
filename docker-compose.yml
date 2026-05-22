@@ -16,3 +16,5 @@ services:
       - DB_USER=${DB_USER:?请在 Portainer 环境变量中设置数据库用户}
       - DB_PASSWORD=${DB_PASSWORD:?请在 Portainer 环境变量中设置数据库密码}
       - JWT_SECRET=${JWT_SECRET:?请在 Portainer 环境变量中设置 JWT_SECRET（至少16字符）}
+      - TURNSTILE_SITE_KEY=${TURNSTILE_SITE_KEY:?请在 Portainer 环境变量中设置 Turnstile Site Key}
+      - TURNSTILE_SECRET_KEY=${TURNSTILE_SECRET_KEY:?请在 Portainer 环境变量中设置 Turnstile Secret Key}

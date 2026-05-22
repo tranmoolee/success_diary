@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const { pool } = require('../db');
 const { generateToken, authenticate } = require('../middleware/auth');
+const { getClientIp, verifyTurnstile } = require('../turnstile');
 const {
   validate,
   registerSchema,
@@ -15,7 +16,12 @@ const router = express.Router();
 // 注册
 router.post('/register', validate(registerSchema), async (req, res) => {
   try {
-    const { username, password, displayName } = req.validated;
+    const { username, password, displayName, turnstileToken } = req.validated;
+
+    const human = await verifyTurnstile(turnstileToken, getClientIp(req), 'register');
+    if (!human) {
+      return res.status(400).json({ error: '人机验证失败，请重试' });
+    }
 
     const existing = await pool.query('SELECT id FROM users WHERE username = $1', [username]);
     if (existing.rows.length > 0) {
