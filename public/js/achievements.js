@@ -74,6 +74,49 @@ function buildAchievementContext() {
   };
 }
 
+function clampPct(value) {
+  return Math.max(0, Math.min(100, Math.round(value)));
+}
+
+function achievementProgress(a, ctx) {
+  const stats = ctx.stats || {};
+  const totalEntries = stats.totalEntries || 0;
+  const maxStreak = stats.maxStreak || 0;
+  const tagCount = ctx.tagSet?.size || 0;
+  const dreamsCount = ctx.dreamsCount || 0;
+  const dreamsDone = ctx.dreamsDone || 0;
+  const jarBalance = ctx.jarBalance || 0;
+  const todayCount = Math.max(ctx.todayEntries?.length || 0, ctx.maxDayCount || 0);
+  const simpleDone = { current: 1, target: 1, label: '1 / 1', pct: 100 };
+  const byCode = {
+    first_entry: { current: totalEntries, target: 1, unit: '条' },
+    three_in_day: { current: todayCount, target: 3, unit: '条' },
+    five_in_day: { current: todayCount, target: 5, unit: '条' },
+    ten_in_day: { current: todayCount, target: 10, unit: '条' },
+    streak_3: { current: maxStreak, target: 3, unit: '天' },
+    streak_7: { current: maxStreak, target: 7, unit: '天' },
+    streak_14: { current: maxStreak, target: 14, unit: '天' },
+    streak_30: { current: maxStreak, target: 30, unit: '天' },
+    streak_100: { current: maxStreak, target: 100, unit: '天' },
+    total_50: { current: totalEntries, target: 50, unit: '条' },
+    total_200: { current: totalEntries, target: 200, unit: '条' },
+    total_500: { current: totalEntries, target: 500, unit: '条' },
+    all_tags: { current: tagCount, target: 7, unit: '类' },
+    first_dream: { current: dreamsCount, target: 1, unit: '个' },
+    dream_done: { current: dreamsDone, target: 1, unit: '个' },
+    first_save: { current: jarBalance > 0 ? 1 : 0, target: 1, unit: '次' },
+    save_1000: { current: jarBalance, target: 1000, unit: '元' },
+    open_history: ctx.viewedHistory ? simpleDone : { current: 0, target: 1, label: '未完成' },
+    theme_change: ctx.changedTheme ? simpleDone : { current: 0, target: 1, label: '未完成' },
+    share_card: ctx.sharedCard ? simpleDone : { current: 0, target: 1, label: '未完成' },
+  };
+  const p = byCode[a.code] || { current: 0, target: 1 };
+  const current = Math.min(p.current, p.target);
+  const pct = p.pct ?? clampPct((current / p.target) * 100);
+  const label = p.label || `${Number(current).toLocaleString()} / ${Number(p.target).toLocaleString()}${p.unit || ''}`;
+  return { pct, label };
+}
+
 function setFlag(key) {
   const flags = JSON.parse(localStorage.getItem('sd_flags') || '{}');
   flags[key] = true;
@@ -122,6 +165,7 @@ let badgeFilter = 'all';
 function renderBadges() {
   const grid = el('badgeGrid');
   if (!grid) return;
+  const ctx = buildAchievementContext();
   const unlockedCount = ACHIEVEMENTS.filter(a => unlockedAchievements.has(a.code)).length;
   const total = ACHIEVEMENTS.length;
   const pct = total ? (unlockedCount / total) * 100 : 0;
@@ -133,19 +177,29 @@ function renderBadges() {
       <div style="font-size:22px;">🏆</div>
     `;
   }
-  const filtered = ACHIEVEMENTS.filter(a => {
+  const filtered = ACHIEVEMENTS
+    .map((a, index) => ({ ...a, index, unlocked: unlockedAchievements.has(a.code) }))
+    .filter(a => {
     if (badgeFilter === 'all') return true;
-    if (badgeFilter === 'unlocked') return unlockedAchievements.has(a.code);
-    if (badgeFilter === 'locked') return !unlockedAchievements.has(a.code);
+    if (badgeFilter === 'unlocked') return a.unlocked;
+    if (badgeFilter === 'locked') return !a.unlocked;
     return true;
-  });
+  })
+    .sort((a, b) => Number(b.unlocked) - Number(a.unlocked) || a.index - b.index);
   grid.innerHTML = filtered.map(a => {
-    const unlocked = unlockedAchievements.has(a.code);
+    const unlocked = a.unlocked;
+    const progress = achievementProgress(a, ctx);
     return `
       <div class="badge-tile ${unlocked ? 'unlocked' : 'locked'}" title="${escapeHtml(a.desc)}">
         <div class="icon">${a.icon}</div>
         <div class="name">${escapeHtml(a.name)}</div>
         <div class="desc">${escapeHtml(a.desc)}</div>
+        ${unlocked ? '<div class="badge-state">已解锁</div>' : `
+          <div class="badge-progress" aria-label="解锁进度 ${progress.label}">
+            <div class="badge-progress-fill" style="width:${progress.pct}%"></div>
+          </div>
+          <div class="badge-progress-text">${escapeHtml(progress.label)}</div>
+        `}
       </div>
     `;
   }).join('') || '<div class="empty-state"><p>暂无徽章</p></div>';
