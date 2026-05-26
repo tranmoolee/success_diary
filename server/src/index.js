@@ -11,8 +11,10 @@ const savingsRoutes = require('./routes/savings');
 const statsRoutes = require('./routes/stats');
 const achievementsRoutes = require('./routes/achievements');
 const sharesRoutes = require('./routes/shares');
-const { authenticate } = require('./middleware/auth');
+const adminRoutes = require('./routes/admin');
+const { authenticate, requireAdmin, rejectIfDisabled } = require('./middleware/auth');
 const { getTurnstileSiteKey } = require('./turnstile');
+const { getSettings } = require('./settings');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -88,25 +90,56 @@ const authLimiter = rateLimit({
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 
+// 后台入口登录单独限流，避免高价值入口与普通登录共享过宽配额
+const adminLoginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 8,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: '后台登录尝试过于频繁，请稍后再试' },
+});
+app.use('/api/admin-login', adminLoginLimiter);
+
 // Static frontend
 app.use(express.static(path.join(__dirname, '../../public')));
 
-app.get('/api/config', (req, res) => {
-  res.json({
-    turnstileSiteKey: getTurnstileSiteKey(),
-    plausibleDomain: PLAUSIBLE_DOMAIN,
-    plausibleScriptUrl: PLAUSIBLE_DOMAIN ? PLAUSIBLE_SCRIPT_URL : '',
-  });
+app.get('/api/config', async (req, res) => {
+  try {
+    const settings = await getSettings();
+    res.json({
+      turnstileSiteKey: getTurnstileSiteKey(),
+      plausibleDomain: PLAUSIBLE_DOMAIN,
+      plausibleScriptUrl: PLAUSIBLE_DOMAIN ? PLAUSIBLE_SCRIPT_URL : '',
+      settings,
+    });
+  } catch (err) {
+    console.error('config 读取失败:', err);
+    res.status(500).json({ error: '读取配置失败' });
+  }
+});
+
+app.post('/api/admin-login', async (req, res) => {
+  req.url = '/login';
+  authRoutes(req, res);
 });
 
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/entries', authenticate, entryRoutes);
-app.use('/api/dreams', authenticate, dreamRoutes);
-app.use('/api/savings', authenticate, savingsRoutes);
-app.use('/api/stats', authenticate, statsRoutes);
-app.use('/api/achievements', authenticate, achievementsRoutes);
-app.use('/api/shares', authenticate, sharesRoutes);
+app.use('/api/entries', authenticate, rejectIfDisabled, entryRoutes);
+app.use('/api/dreams', authenticate, rejectIfDisabled, dreamRoutes);
+app.use('/api/savings', authenticate, rejectIfDisabled, savingsRoutes);
+app.use('/api/stats', authenticate, rejectIfDisabled, statsRoutes);
+app.use('/api/achievements', authenticate, rejectIfDisabled, achievementsRoutes);
+app.use('/api/shares', authenticate, rejectIfDisabled, sharesRoutes);
+app.use('/api/admin', authenticate, requireAdmin, adminRoutes);
+
+// 后台管理页面（独立 HTML，必须在 SPA fallback 之前注册）
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../public/admin.html'));
+});
+app.get('/admin/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../public/admin.html'));
+});
 
 // Public share landing page — GET /s/:code
 app.get('/s/:code', async (req, res) => {

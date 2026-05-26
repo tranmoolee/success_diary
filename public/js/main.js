@@ -7,6 +7,8 @@ async function initAnalytics() {
       return;
     }
     const config = await res.json();
+    appConfig = config;
+    applyRuntimeSettings(config.settings || {});
     if (!config.plausibleDomain || !config.plausibleScriptUrl) {
       console.info('[analytics] Plausible disabled: PLAUSIBLE_DOMAIN is empty');
       return;
@@ -32,6 +34,62 @@ async function initAnalytics() {
   } catch (err) {
     console.warn('[analytics] init failed:', err.message);
   }
+}
+
+function applyRuntimeSettings(settings) {
+  applyAnnouncement(settings.public_announcement || '');
+  if (settings.daily_limit_minutes) {
+    console.info('[settings] daily limit:', settings.daily_limit_minutes, 'minutes');
+  }
+  if (token && currentUser) startDailyLimitReminder();
+}
+
+function applyAnnouncement(message) {
+  const banner = el('announcementBanner');
+  const text = el('announcementText');
+  if (!banner || !text) return;
+
+  const trimmed = String(message || '').trim();
+  const dismissed = localStorage.getItem('sd_dismissed_announcement') === trimmed;
+  if (!trimmed || dismissed) {
+    banner.style.display = 'none';
+    return;
+  }
+
+  text.textContent = trimmed;
+  banner.style.display = 'flex';
+  console.info('[settings] public announcement loaded');
+}
+
+function dismissAnnouncement() {
+  const text = el('announcementText')?.textContent || '';
+  if (text) localStorage.setItem('sd_dismissed_announcement', text);
+  const banner = el('announcementBanner');
+  if (banner) banner.style.display = 'none';
+}
+
+function getDailyLimitMinutes() {
+  const raw = appConfig?.settings?.daily_limit_minutes;
+  const value = Number(raw);
+  return Number.isFinite(value) && value > 0 ? value : 0;
+}
+
+function startDailyLimitReminder() {
+  clearInterval(dailyLimitTimer);
+  const minutes = getDailyLimitMinutes();
+  if (!minutes) return;
+
+  const key = 'sd_session_started_at';
+  if (!sessionStorage.getItem(key)) {
+    sessionStorage.setItem(key, String(Date.now()));
+  }
+  dailyLimitTimer = setInterval(() => {
+    const startedAt = Number(sessionStorage.getItem(key) || Date.now());
+    if (Date.now() - startedAt >= minutes * 60 * 1000) {
+      showToast(`今天已使用约 ${minutes} 分钟，休息一下再回来吧`);
+      clearInterval(dailyLimitTimer);
+    }
+  }, 30 * 1000);
 }
 
 function switchTab(name) {

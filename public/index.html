@@ -83,6 +83,10 @@
 
 <!-- APP -->
 <div class="app-shell" id="appShell">
+  <div class="announcement-banner" id="announcementBanner" style="display:none;">
+    <span id="announcementText"></span>
+    <button class="announcement-close" type="button" onclick="dismissAnnouncement()" aria-label="关闭公告">×</button>
+  </div>
   <div class="header">
     <div class="header-top">
       <div><h1>成功日记</h1><div class="subtitle" id="todayDate"></div></div>

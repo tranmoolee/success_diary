@@ -6,12 +6,29 @@ let turnstileRenderTimer = null;
 async function initTurnstile() {
   try {
     const data = await api('/config');
+    appConfig = data;
     turnstileSiteKey = data.turnstileSiteKey || '';
     console.info('[turnstile] config:', turnstileSiteKey ? 'site key configured' : 'site key missing');
+    updateRegistrationAvailability();
     if (!isLoginMode) renderTurnstile();
   } catch (err) {
     turnstileSiteKey = '';
     console.warn('[turnstile] config request failed:', err.message);
+  }
+}
+
+function isRegistrationEnabled() {
+  const value = appConfig?.settings?.registration || 'on';
+  return String(value).trim().toLowerCase() !== 'off';
+}
+
+function updateRegistrationAvailability() {
+  const link = el('authSwitchLink');
+  if (!link) return;
+  const enabled = isRegistrationEnabled();
+  link.classList.toggle('disabled', !enabled && isLoginMode);
+  if (isLoginMode) {
+    link.textContent = enabled ? '注册' : '暂未开放';
   }
 }
 
@@ -54,12 +71,17 @@ function resetTurnstile() {
 }
 
 function toggleAuthMode() {
+  if (isLoginMode && !isRegistrationEnabled()) {
+    el('authError').textContent = '当前暂未开放注册';
+    el('authError').classList.add('show');
+    return;
+  }
   isLoginMode = !isLoginMode;
   el('registerFields').style.display = isLoginMode ? 'none' : 'block';
   el('turnstileContainer').style.display = isLoginMode ? 'none' : 'flex';
   el('authBtn').textContent = isLoginMode ? '登录' : '注册';
   el('authSwitchText').textContent = isLoginMode ? '还没有账号？' : '已有账号？';
-  el('authSwitchLink').textContent = isLoginMode ? '注册' : '登录';
+  el('authSwitchLink').textContent = isLoginMode ? (isRegistrationEnabled() ? '注册' : '暂未开放') : '登录';
   el('authError').classList.remove('show');
   if (!isLoginMode) requestAnimationFrame(renderTurnstile);
 }
@@ -80,6 +102,13 @@ async function handleAuth() {
     const endpoint = isLoginMode ? '/auth/login' : '/auth/register';
     const body = { username, password };
     if (!isLoginMode) {
+      if (!isRegistrationEnabled()) {
+        errEl.textContent = '当前暂未开放注册';
+        errEl.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = '注册';
+        return;
+      }
       const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value || '';
       if (!turnstileToken) {
         errEl.textContent = '请先完成人机验证';
@@ -147,4 +176,5 @@ async function enterApp() {
   // render hero card now that stats loaded
   renderHeroCard(cachedStats);
   renderQuests();
+  startDailyLimitReminder();
 }

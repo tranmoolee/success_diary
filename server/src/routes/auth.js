@@ -1,8 +1,9 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { pool } = require('../db');
-const { generateToken, authenticate } = require('../middleware/auth');
+const { generateToken, authenticate, rejectIfDisabled } = require('../middleware/auth');
 const { getClientIp, verifyTurnstile } = require('../turnstile');
+const { getSetting, isRegistrationOpen } = require('../settings');
 const {
   validate,
   registerSchema,
@@ -17,6 +18,11 @@ const router = express.Router();
 router.post('/register', validate(registerSchema), async (req, res) => {
   try {
     const { username, password, displayName, turnstileToken } = req.validated;
+
+    const registration = await getSetting('registration');
+    if (!isRegistrationOpen(registration)) {
+      return res.status(403).json({ error: '当前暂未开放注册' });
+    }
 
     const human = await verifyTurnstile(turnstileToken, getClientIp(req), 'register');
     if (!human) {
@@ -62,6 +68,9 @@ router.post('/login', validate(loginSchema), async (req, res) => {
     if (!valid) {
       return res.status(401).json({ error: '用户名或密码错误' });
     }
+    if (user.disabled) {
+      return res.status(403).json({ error: '账户已被禁用，请联系管理员' });
+    }
 
     const token = generateToken(user.id, user.username);
 
@@ -76,7 +85,7 @@ router.post('/login', validate(loginSchema), async (req, res) => {
 });
 
 // 获取当前用户信息
-router.get('/me', authenticate, async (req, res) => {
+router.get('/me', authenticate, rejectIfDisabled, async (req, res) => {
   try {
     const result = await pool.query(
       'SELECT id, username, display_name, theme, created_at FROM users WHERE id = $1',
@@ -93,7 +102,7 @@ router.get('/me', authenticate, async (req, res) => {
 });
 
 // 更新用户资料（昵称 / 主题）
-router.patch('/profile', authenticate, validate(updateProfileSchema), async (req, res) => {
+router.patch('/profile', authenticate, rejectIfDisabled, validate(updateProfileSchema), async (req, res) => {
   try {
     const { displayName, theme } = req.validated;
     const sets = [];
@@ -114,7 +123,7 @@ router.patch('/profile', authenticate, validate(updateProfileSchema), async (req
 });
 
 // 修改密码
-router.patch('/password', authenticate, validate(changePasswordSchema), async (req, res) => {
+router.patch('/password', authenticate, rejectIfDisabled, validate(changePasswordSchema), async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.validated;
 

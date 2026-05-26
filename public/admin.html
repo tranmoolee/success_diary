@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>后台管理 · 成功日记</title>
+<link rel="stylesheet" href="./styles/admin.css">
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div class="admin-login" id="adminLogin">
+  <div class="login-card">
+    <div class="login-logo">🛡️</div>
+    <h1>后台管理</h1>
+    <p class="login-sub">成功日记 · 仅管理员登录</p>
+    <div class="login-error" id="loginError"></div>
+    <input class="login-input" id="adminUser" placeholder="管理员账号" autocomplete="username" />
+    <input class="login-input" id="adminPass" type="password" placeholder="密码" autocomplete="current-password" />
+    <button class="login-btn" id="loginBtn" onclick="adminLogin()">登录</button>
+    <a class="login-back" href="/">← 返回主站</a>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div class="admin-shell" id="adminShell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon">🛡️</div>
+      <div>
+        <div class="brand-title">后台管理</div>
+        <div class="brand-sub">成功日记</div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <a class="nav-item active" data-section="dashboard" onclick="switchSection('dashboard')">
+        <span class="icon">📊</span><span>数据看板</span>
+      </a>
+      <a class="nav-item" data-section="users" onclick="switchSection('users')">
+        <span class="icon">👥</span><span>用户管理</span>
+      </a>
+      <a class="nav-item" data-section="entries" onclick="switchSection('entries')">
+        <span class="icon">📝</span><span>日记审核</span>
+      </a>
+      <a class="nav-item" data-section="shares" onclick="switchSection('shares')">
+        <span class="icon">🔗</span><span>分享统计</span>
+      </a>
+      <a class="nav-item" data-section="settings" onclick="switchSection('settings')">
+        <span class="icon">⚙️</span><span>系统设置</span>
+      </a>
+      <a class="nav-item" data-section="audit" onclick="switchSection('audit')">
+        <span class="icon">📜</span><span>操作日志</span>
+      </a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="admin-info">
+        <div class="admin-avatar" id="adminAvatar">?</div>
+        <div>
+          <div class="admin-name" id="adminName">--</div>
+          <div class="admin-role">管理员</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="adminLogout()">退出</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-area">
+    <header class="top-header">
+      <h2 id="sectionTitle">数据看板</h2>
+      <div class="header-actions">
+        <a class="header-link" href="/" target="_blank">前台 ↗</a>
+      </div>
+    </header>
+    <div class="admin-announcement" id="adminAnnouncement" style="display:none;">
+      <span id="adminAnnouncementText"></span>
+      <button type="button" onclick="dismissAdminAnnouncement()" aria-label="关闭后台公告">×</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section class="section active" id="section-dashboard">
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">总用户数</div>
+          <div class="kpi-value" id="kpiUsers">--</div>
+          <div class="kpi-trend" id="kpiUsersTrend">今日 +0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">日活 (24h)</div>
+          <div class="kpi-value" id="kpiDAU">--</div>
+          <div class="kpi-trend" id="kpiWAU">周活 0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">日记总数</div>
+          <div class="kpi-value" id="kpiEntries">--</div>
+          <div class="kpi-trend" id="kpiEntriesTrend">今日 +0</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">分享总数</div>
+          <div class="kpi-value" id="kpiShares">--</div>
+          <div class="kpi-trend" id="kpiSharesViews">浏览 0 次</div>
+        </div>
+      </div>
+
+      <div class="chart-row">
+        <div class="chart-card">
+          <h3>近 30 天增长</h3>
+          <canvas id="growthChart" height="220"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>主题使用分布</h3>
+          <div id="themeDist" class="theme-dist"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- USERS -->
+    <section class="section" id="section-users">
+      <div class="toolbar">
+        <input class="search-input" id="userSearch" placeholder="搜索用户名 / 昵称..." />
+        <select class="filter-select" id="userFilter">
+          <option value="all">全部</option>
+          <option value="active">7 天活跃</option>
+          <option value="admin">管理员</option>
+          <option value="disabled">已禁用</option>
+        </select>
+        <button class="btn-primary" onclick="loadUsers(1)">搜索</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>用户</th>
+              <th>主题</th>
+              <th>日记</th>
+              <th>徽章</th>
+              <th>分享</th>
+              <th>注册</th>
+              <th>最近活跃</th>
+              <th>状态</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="userTable"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="userPagination"></div>
+    </section>
+
+    <!-- ENTRIES -->
+    <section class="section" id="section-entries">
+      <div class="toolbar">
+        <input class="search-input" id="entrySearch" placeholder="搜索日记内容关键词..." />
+        <select class="filter-select" id="entryTag">
+          <option value="">全部分类</option>
+          <option value="生活">生活</option>
+          <option value="健康">健康</option>
+          <option value="学习">学习</option>
+          <option value="工作">工作</option>
+          <option value="社交">社交</option>
+          <option value="创意">创意</option>
+          <option value="理财">理财</option>
+        </select>
+        <button class="btn-primary" onclick="loadEntries(1)">搜索</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>用户</th>
+              <th>日期</th>
+              <th>内容</th>
+              <th>分类</th>
+              <th>创建时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="entryTable"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="entryPagination"></div>
+    </section>
+
+    <!-- SHARES -->
+    <section class="section" id="section-shares">
+      <div class="toolbar">
+        <select class="filter-select" id="shareSort">
+          <option value="created">按创建时间</option>
+          <option value="views">按浏览量</option>
+        </select>
+        <button class="btn-primary" onclick="loadShares(1)">刷新</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>分享码</th>
+              <th>用户</th>
+              <th>日期</th>
+              <th>条目</th>
+              <th>浏览量</th>
+              <th>创建时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="shareTable"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="sharePagination"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="section" id="section-settings">
+      <div class="settings-grid">
+        <div class="setting-card">
+          <h3>📢 前台公告</h3>
+          <p class="setting-desc">显示在前台首页顶部，用于活动通知 / 维护公告。留空则不显示。</p>
+          <textarea class="setting-input" id="set_public_announcement" rows="3" placeholder="例如：本周末维护，预计 1 小时"></textarea>
+          <button class="btn-primary" onclick="saveSetting('public_announcement')">保存</button>
+        </div>
+        <div class="setting-card">
+          <h3>🛡️ 后台公告</h3>
+          <p class="setting-desc">仅显示给后台管理员，用于内部提醒。留空则不显示。</p>
+          <textarea class="setting-input" id="set_admin_announcement" rows="3" placeholder="例如：先审核新注册用户"></textarea>
+          <button class="btn-primary" onclick="saveSetting('admin_announcement')">保存</button>
+        </div>
+        <div class="setting-card">
+          <h3>🚫 注册开关</h3>
+          <p class="setting-desc">填 <code>off</code> 关闭注册，填 <code>on</code> 或留空开启注册。</p>
+          <input class="setting-input" id="set_registration" placeholder="on" />
+          <button class="btn-primary" onclick="saveSetting('registration')">保存</button>
+        </div>
+        <div class="setting-card">
+          <h3>⏱️ 每日使用时长上限</h3>
+          <p class="setting-desc">分钟数。前端读取后强制提示。例如 90 = 1.5 小时。留空或 0 不限制。</p>
+          <input class="setting-input" id="set_daily_limit_minutes" type="number" placeholder="90" />
+          <button class="btn-primary" onclick="saveSetting('daily_limit_minutes')">保存</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- AUDIT LOG -->
+    <section class="section" id="section-audit">
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>时间</th>
+              <th>管理员</th>
+              <th>操作</th>
+              <th>对象</th>
+              <th>详情</th>
+            </tr>
+          </thead>
+          <tbody id="auditTable"></tbody>
+        </table>
+      </div>
+      <div class="pagination" id="auditPagination"></div>
+    </section>
+  </main>
+</div>
+
+<!-- USER DETAIL MODAL -->
+<div class="modal-overlay" id="userModal" onclick="if(event.target===this)closeUserModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h3 id="userModalTitle">用户详情</h3>
+      <button class="close-btn" onclick="closeUserModal()">×</button>
+    </div>
+    <div class="modal-body" id="userModalBody"></div>
+  </div>
+</div>
+
+<!-- RESET PASSWORD MODAL -->
+<div class="modal-overlay" id="resetModal" onclick="if(event.target===this)closeResetModal()">
+  <div class="modal-box small">
+    <div class="modal-head">
+      <h3>重置密码</h3>
+      <button class="close-btn" onclick="closeResetModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p id="resetModalUser" style="margin-bottom:12px;color:#64748b;font-size:13px;"></p>
+      <input class="setting-input" id="resetPasswordInput" type="text" placeholder="新密码（至少 8 位）" />
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn-primary" onclick="confirmReset()">确认重置</button>
+        <button class="btn-secondary" onclick="closeResetModal()">取消</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="admin-toast" id="adminToast"></div>
+
+<script src="./js/admin.js"></script>
+</body>
+</html>

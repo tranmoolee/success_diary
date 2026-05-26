@@ -94,7 +94,51 @@ async function initDB() {
 
       CREATE INDEX IF NOT EXISTS idx_shares_code ON shares(share_code);
       CREATE INDEX IF NOT EXISTS idx_shares_user ON shares(user_id);
+
+      -- 管理员相关字段
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS is_admin BOOLEAN DEFAULT FALSE;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS disabled BOOLEAN DEFAULT FALSE;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS last_active_at TIMESTAMPTZ;
+      CREATE INDEX IF NOT EXISTS idx_users_is_admin ON users(is_admin) WHERE is_admin = TRUE;
+      CREATE INDEX IF NOT EXISTS idx_users_last_active ON users(last_active_at);
+
+      -- 系统设置（公告、注册开关等键值对）
+      CREATE TABLE IF NOT EXISTS system_settings (
+        key VARCHAR(50) PRIMARY KEY,
+        value TEXT,
+        updated_at TIMESTAMPTZ DEFAULT NOW()
+      );
+
+      -- 管理员操作日志（审计追踪）
+      CREATE TABLE IF NOT EXISTS admin_audit_log (
+        id SERIAL PRIMARY KEY,
+        admin_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+        action VARCHAR(50) NOT NULL,
+        target_type VARCHAR(20),
+        target_id INTEGER,
+        detail JSONB DEFAULT '{}'::jsonb,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      );
+      CREATE INDEX IF NOT EXISTS idx_admin_audit_created ON admin_audit_log(created_at DESC);
     `);
+
+    // 启动时根据 ADMIN_USERNAMES env 自动 grant admin
+    const adminUsernames = (process.env.ADMIN_USERNAMES || '')
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+    if (adminUsernames.length > 0) {
+      const result = await client.query(
+        `UPDATE users SET is_admin = TRUE WHERE username = ANY($1) AND is_admin = FALSE RETURNING username`,
+        [adminUsernames]
+      );
+      if (result.rows.length > 0) {
+        console.log(`[admin] 已授权管理员: ${result.rows.map(r => r.username).join(', ')}`);
+      }
+      console.log(`[admin] 配置的管理员账号: ${adminUsernames.join(', ')}`);
+    } else {
+      console.log('[admin] 未配置 ADMIN_USERNAMES，无管理员账户');
+    }
     console.log('数据库初始化完成');
   } finally {
     client.release();

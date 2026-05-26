@@ -8,6 +8,8 @@ let entryCount = 3;
 let cachedStats = null;
 let cachedDreamsCount = 0;
 let cachedJarBalance = 0;
+let appConfig = null;
+let dailyLimitTimer = null;
 let unlockedAchievements = new Set(
   JSON.parse(localStorage.getItem('sd_unlocked') || '[]')
 );
