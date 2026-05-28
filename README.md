@@ -1,37 +1,39 @@
-# Success Diary
+# 成功日记
 
-成功日记 is a lightweight web app inspired by the idea of recording small daily wins. It helps users build confidence by saving successful moments, tracking dreams, and reviewing personal growth over time.
+[English README](./README.en.md)
 
-## Features
+成功日记是一款轻量级 Web 应用，用来记录每天的小成功、追踪梦想目标，并通过连续记录、统计面板和分享卡片帮助用户看见自己的成长。
 
-- Daily success entries with multiple rows and category tags
-- Dream savings jar for tracking goals and money movement
-- Growth dashboard with streaks, totals, trends, and category stats
-- Share cards generated in the browser with QR codes
-- Multi-user support with JWT authentication
-- Cloudflare Turnstile protection for registration
-- Admin entry point for basic operational settings
-- Vanilla HTML/CSS/JavaScript frontend served by an Express API
+## 功能特性
 
-## Tech Stack
+- 每日成功事项记录，支持多条输入和分类标签
+- 梦想存钱罐，用于记录目标和收支变化
+- 成长统计面板，展示连续天数、累计数据、趋势和分类统计
+- 浏览器内生成带二维码的分享卡片
+- 多用户支持，基于 JWT 的登录认证
+- 注册流程支持 Cloudflare Turnstile 人机验证
+- 管理入口用于基础运营设置
+- 前端使用原生 HTML、CSS、JavaScript，后端使用 Express 提供 API 和静态资源服务
 
-- Frontend: HTML, CSS, Vanilla JavaScript
-- Backend: Node.js, Express
-- Database: PostgreSQL
-- Security: Helmet CSP, bcrypt, Zod validation, rate limiting
-- Deployment: Docker Compose
+## 技术栈
 
-## Quick Start
+- 前端：HTML、CSS、Vanilla JavaScript
+- 后端：Node.js、Express
+- 数据库：PostgreSQL
+- 安全：Helmet CSP、bcrypt、Zod 校验、接口限流
+- 部署：Docker Compose
 
-### 1. Configure Environment
+## 快速开始
+
+### 1. 配置环境变量
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` and set the required database, JWT, and Turnstile values.
+编辑 `.env`，设置数据库、JWT 和 Turnstile 相关配置。
 
-At minimum, production deployments must provide:
+生产环境至少需要提供：
 
 ```env
 DB_HOST=your-postgres-host
@@ -44,17 +46,17 @@ TURNSTILE_SITE_KEY=your-cloudflare-turnstile-site-key
 TURNSTILE_SECRET_KEY=your-cloudflare-turnstile-secret-key
 ```
 
-### 2. Start with Docker Compose
+### 2. 使用 Docker Compose 启动
 
 ```bash
 docker compose up -d --build
 ```
 
-The app listens on `http://localhost:3800` by default. Override `APP_PORT` if you need another host port.
+默认访问地址为 `http://localhost:3800`。如需修改宿主机端口，可以设置 `APP_PORT`。
 
-### 3. Local Development
+### 3. 本地开发
 
-Run the API directly:
+直接运行后端服务：
 
 ```bash
 cd server
@@ -62,57 +64,57 @@ npm install
 npm run dev
 ```
 
-The Express server serves the static frontend from `public/` and exposes API routes under `/api`.
+Express 服务会从 `public/` 提供静态前端，并在 `/api` 下暴露接口。
 
-## API Overview
+## API 概览
 
-Most API endpoints require:
+大多数接口需要携带：
 
 ```http
 Authorization: Bearer <token>
 ```
 
-Public endpoints:
+公开接口：
 
-| Method | Path | Description |
+| 方法 | 路径 | 说明 |
 | --- | --- | --- |
-| POST | `/api/auth/register` | Register a user |
-| POST | `/api/auth/login` | Log in |
-| GET | `/api/config` | Read public runtime config |
-| GET | `/s/:code` | Public share page |
+| POST | `/api/auth/register` | 注册 |
+| POST | `/api/auth/login` | 登录 |
+| GET | `/api/config` | 读取公开运行配置 |
+| GET | `/s/:code` | 公开分享页面 |
 
-Authenticated endpoints:
+登录后接口：
 
-| Method | Path | Description |
+| 方法 | 路径 | 说明 |
 | --- | --- | --- |
-| GET | `/api/auth/me` | Current user profile |
-| PATCH | `/api/auth/profile` | Update display name or theme |
-| PATCH | `/api/auth/password` | Change password |
-| GET | `/api/entries/:date` | Read entries for a date |
-| PUT | `/api/entries/:date` | Save entries for a date |
-| GET | `/api/entries/month/:yearMonth` | Read recorded days in a month |
-| GET/POST | `/api/dreams` | List or create dreams |
-| PATCH | `/api/dreams/:id` | Update a dream |
-| DELETE | `/api/dreams/:id` | Delete a dream |
-| GET | `/api/savings` | List savings records |
-| POST | `/api/savings` | Add deposit or withdrawal |
-| GET | `/api/stats` | Read aggregate stats |
-| GET | `/api/achievements` | Read achievements |
-| POST | `/api/shares` | Create a share link |
-| GET | `/api/shares/stats` | Read share stats |
+| GET | `/api/auth/me` | 当前用户资料 |
+| PATCH | `/api/auth/profile` | 更新昵称或主题 |
+| PATCH | `/api/auth/password` | 修改密码 |
+| GET | `/api/entries/:date` | 读取某日记录 |
+| PUT | `/api/entries/:date` | 保存某日记录 |
+| GET | `/api/entries/month/:yearMonth` | 读取某月已记录日期 |
+| GET/POST | `/api/dreams` | 列出或创建梦想 |
+| PATCH | `/api/dreams/:id` | 更新梦想 |
+| DELETE | `/api/dreams/:id` | 删除梦想 |
+| GET | `/api/savings` | 列出存钱罐记录 |
+| POST | `/api/savings` | 新增存入或支出 |
+| GET | `/api/stats` | 读取综合统计 |
+| GET | `/api/achievements` | 读取成就 |
+| POST | `/api/shares` | 创建分享链接 |
+| GET | `/api/shares/stats` | 读取分享统计 |
 
-## Security Notes
+## 安全说明
 
-- Passwords are hashed with bcrypt.
-- JWT signing requires a configured secret.
-- Registration uses Cloudflare Turnstile and server-side verification.
-- Request payloads are validated with Zod.
-- User-facing content is escaped before rendering.
-- Helmet configures security headers and CSP.
-- API and auth routes use rate limiting.
-- Savings withdrawals use database transactions and advisory locks.
+- 密码使用 bcrypt 哈希存储
+- JWT 签名密钥必须通过环境变量配置
+- 注册使用 Cloudflare Turnstile，并在服务端校验
+- 请求体使用 Zod 校验
+- 面向用户展示的内容会在渲染前转义
+- Helmet 配置安全响应头和 CSP
+- API 和认证接口使用限流
+- 存钱罐支出使用数据库事务和 advisory lock 控制并发
 
-## Project Structure
+## 项目结构
 
 ```text
 Success_diary/
@@ -136,6 +138,6 @@ Success_diary/
 └── README.md
 ```
 
-## License
+## 开源协议
 
 MIT
