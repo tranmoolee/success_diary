@@ -21,7 +21,9 @@ function localDateStr(d) {
 function todayKey() { return localDateStr(new Date()); }
 function formatDate(ds) {
   const d = new Date(ds + 'T00:00:00');
-  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+  return (typeof fmtFullDate === 'function')
+    ? fmtFullDate(d)
+    : `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
 function showToast(msg) {

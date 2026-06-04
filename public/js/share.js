@@ -9,13 +9,13 @@ function generateQRDataURL(text) {
 
 async function generateShareCard() {
   const entries = currentEntryDraft();
-  if (entries.length === 0) { showToast('先记录一些内容再分享吧'); return; }
+  if (entries.length === 0) { showToast(t('share.needContent')); return; }
 
-  showToast('正在生成分享卡片...');
+  showToast(t('share.generating'));
 
   let stats = cachedStats || {};
   const now = new Date();
-  const dateStr = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日`;
+  const dateStr = fmtFullDate(now);
   const entryDate = todayKey();
 
   let shareUrl = '';
@@ -31,7 +31,7 @@ async function generateShareCard() {
     shareUrl = shareData.shareUrl;
     shareCode = shareData.shareCode;
   } catch (err) {
-    showToast('生成分享链接失败: ' + err.message);
+    showToast(t('share.linkFail', { msg: err.message }));
     return;
   }
 
@@ -40,32 +40,32 @@ async function generateShareCard() {
   const card = el('shareCard');
   card.innerHTML = `
     <div class="share-card-header">
-      <h2>📒 我的成功日记</h2>
+      <h2>${t('share.cardTitle')}</h2>
       <p>${dateStr}</p>
     </div>
     <div class="share-card-stats">
-      <div class="share-card-stat"><div class="val">${stats.currentStreak || 0}</div><div class="lbl">连续天数</div></div>
-      <div class="share-card-stat"><div class="val">${stats.totalDays || 0}</div><div class="lbl">总记录</div></div>
-      <div class="share-card-stat"><div class="val">${stats.totalEntries || 0}</div><div class="lbl">成功事项</div></div>
+      <div class="share-card-stat"><div class="val">${stats.currentStreak || 0}</div><div class="lbl">${t('share.streak')}</div></div>
+      <div class="share-card-stat"><div class="val">${stats.totalDays || 0}</div><div class="lbl">${t('share.total')}</div></div>
+      <div class="share-card-stat"><div class="val">${stats.totalEntries || 0}</div><div class="lbl">${t('share.wins')}</div></div>
     </div>
     <div class="share-card-entries">
       ${entries.map((e, i) => `
         <div class="share-card-entry">
           <div class="share-card-num">${i + 1}</div>
           <div class="share-card-text">${escapeHtml(e.text)}</div>
-          <div class="share-card-tag">${escapeHtml(e.tag)}</div>
+          <div class="share-card-tag">${escapeHtml(tagLabel(e.tag))}</div>
         </div>`).join('')}
     </div>
     <div class="share-card-qr">
       <img src="${qrDataUrl}" class="share-qr-img" />
       <div class="share-qr-info">
-        <div class="share-qr-label">扫码围观 · 点击一起开始记录</div>
+        <div class="share-qr-label">${t('share.qrLabel')}</div>
         <div class="share-qr-url">${shareUrl}</div>
       </div>
     </div>
     <div class="share-card-footer">
-      <div class="streak">🔥 连续 ${stats.currentStreak || 0} 天</div>
-      <div class="brand">成功日记 · 小狗钱钱</div>
+      <div class="streak">${t('share.footerStreak', { n: stats.currentStreak || 0 })}</div>
+      <div class="brand">${t('share.brand')}</div>
     </div>`;
 
   const container = el('shareCardContainer');
@@ -83,7 +83,7 @@ async function generateShareCard() {
     setFlag('sharedCard');
     checkAchievements();
   } catch (err) {
-    showToast('生成失败: ' + err.message);
+    showToast(t('share.genFail', { msg: err.message }));
   } finally {
     container.style.left = '-9999px';
     container.style.zIndex = '-1';
@@ -97,7 +97,7 @@ function downloadShareImage() {
   const now = new Date();
   a.download = `成功日记_${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}.png`;
   a.click();
-  showToast('图片已保存');
+  showToast(t('share.imgSaved'));
 }
 
 function closeSharePreview() {

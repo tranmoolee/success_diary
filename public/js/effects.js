@@ -30,10 +30,10 @@ function showAchievement(title, text, icon) {
 }
 
 function celebrateSave(count) {
-  const title = count >= 5 ? '高能记录官' : count >= 3 ? '今日目标达成' : '成功已入账';
-  const text = count >= 5 ? `一次写下 ${count} 条，高光时刻爆发`
-             : count >= 3 ? '3 条成功事项已点亮'
-             : '你刚刚为自信加了一格能量';
+  const title = count >= 5 ? t('fx.save5.t') : count >= 3 ? t('fx.save3.t') : t('fx.save1.t');
+  const text = count >= 5 ? t('fx.save5.d', { n: count })
+             : count >= 3 ? t('fx.save3.d')
+             : t('fx.save1.d');
   showAchievement(title, text, '✍️');
   burstConfetti(count >= 5 ? 1.5 : 1);
 }
@@ -42,8 +42,8 @@ function showLevelUp(level, rank) {
   const card = el('levelUpCard');
   if (!card) return;
   el('levelUpRing').textContent = `Lv.${level - 1} → Lv.${level}`;
-  el('levelUpBig').textContent = `升级！`;
-  el('levelUpSub').textContent = `新称号：${rank}`;
+  el('levelUpBig').textContent = t('fx.levelUp');
+  el('levelUpSub').textContent = t('fx.newRank', { rank });
   card.classList.add('show');
   burstConfetti(2.2);
   setTimeout(() => card.classList.remove('show'), 2400);

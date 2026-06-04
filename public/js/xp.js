@@ -13,15 +13,15 @@ const LEVEL_CURVE = (() => {
 })();
 
 const RANKS = [
-  { min: 1,  title: '自信新手',  emoji: '🌱' },
-  { min: 3,  title: '成功学徒',  emoji: '🪴' },
-  { min: 5,  title: '日记达人',  emoji: '📒' },
-  { min: 8,  title: '坚持之星',  emoji: '⭐' },
-  { min: 12, title: '自信猎人',  emoji: '🏹' },
-  { min: 16, title: '高光大师',  emoji: '🏆' },
-  { min: 22, title: '梦想骑士',  emoji: '🛡️' },
-  { min: 30, title: '成功王者',  emoji: '👑' },
-  { min: 42, title: '传奇之路',  emoji: '🌟' },
+  { min: 1,  key: 'novice',     emoji: '🌱' },
+  { min: 3,  key: 'apprentice', emoji: '🪴' },
+  { min: 5,  key: 'diarist',    emoji: '📒' },
+  { min: 8,  key: 'star',       emoji: '⭐' },
+  { min: 12, key: 'hunter',     emoji: '🏹' },
+  { min: 16, key: 'master',     emoji: '🏆' },
+  { min: 22, key: 'knight',     emoji: '🛡️' },
+  { min: 30, key: 'king',       emoji: '👑' },
+  { min: 42, key: 'legend',     emoji: '🌟' },
 ];
 
 function computeXP(stats) {
@@ -70,20 +70,20 @@ function renderHeroCard(stats) {
       <div class="hero-meta">
         <div class="hero-title-row">
           <div class="hero-name">${escapeHtml(name)}</div>
-          <div class="hero-rank-chip">Lv.${lv} · ${rank.title}</div>
+          <div class="hero-rank-chip">Lv.${lv} · ${rankTitle(rank)}</div>
         </div>
-        <div class="hero-sub">${initial} · 今天又是变厉害的一天</div>
+        <div class="hero-sub">${initial} · ${t('hero.subtitle')}</div>
         <div class="hero-stats">
-          <div class="hero-stat"><strong>🔥 ${streak}</strong><span>连续天数</span></div>
-          <div class="hero-stat"><strong>📒 ${days}</strong><span>记录天数</span></div>
-          <div class="hero-stat"><strong>✨ ${total}</strong><span>成功事项</span></div>
+          <div class="hero-stat"><strong>🔥 ${streak}</strong><span>${t('hero.streak')}</span></div>
+          <div class="hero-stat"><strong>📒 ${days}</strong><span>${t('hero.days')}</span></div>
+          <div class="hero-stat"><strong>✨ ${total}</strong><span>${t('hero.wins')}</span></div>
         </div>
       </div>
     </div>
     <div class="xp-track">
       <div class="xp-meta">
-        <span>XP ${prog.into} / ${prog.span}</span>
-        <span>下一级 Lv.${lv + 1}</span>
+        <span>${t('hero.xp', { a: prog.into, b: prog.span })}</span>
+        <span>${t('hero.next', { lv: lv + 1 })}</span>
       </div>
       <div class="xp-bar"><div class="xp-bar-fill" style="width:${prog.pct.toFixed(1)}%"></div></div>
     </div>
@@ -93,7 +93,7 @@ function renderHeroCard(stats) {
   if (lv > lastKnownLevel) {
     lastKnownLevel = lv;
     localStorage.setItem('sd_last_level', String(lv));
-    setTimeout(() => showLevelUp(lv, rank.title), 280);
+    setTimeout(() => showLevelUp(lv, rankTitle(rank)), 280);
   }
 
   // also update streak in header

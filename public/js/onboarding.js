@@ -9,7 +9,7 @@ function nextOnboardingSlide() {
   document.querySelector(`.onboarding-slide[data-slide="${onboardingSlide}"]`).classList.add('active');
   $$('.onboarding-dot').forEach(d => d.classList.remove('active'));
   document.querySelector(`.onboarding-dot[data-dot="${onboardingSlide}"]`).classList.add('active');
-  if (onboardingSlide === 3) el('onboardingNext').textContent = '开始使用';
+  if (onboardingSlide === 3) el('onboardingNext').textContent = t('ob.start');
 }
 function finishOnboarding() {
   el('onboarding').classList.remove('show');

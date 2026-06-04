@@ -261,6 +261,28 @@
 }
 .theme-tile.active .label { background: var(--primary); color: white; }
 
+/* ============ LANGUAGE SWITCH ============ */
+.lang-switch {
+  display: inline-flex; gap: 2px; padding: 3px;
+  border-radius: 999px;
+  background: var(--primary-light);
+  border: 1px solid var(--border);
+}
+.lang-switch button {
+  border: none; background: transparent;
+  padding: 5px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 800; color: var(--text-secondary);
+  cursor: pointer; transition: all 0.2s ease; line-height: 1;
+}
+.lang-switch button.active {
+  background: var(--primary); color: #fff;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+}
+.lang-switch.auth-lang {
+  position: absolute; top: 16px; right: 16px; z-index: 5;
+  background: rgba(255,255,255,0.6); backdrop-filter: blur(10px);
+}
+
 /* ============ ONBOARDING ============ */
 .onboarding-overlay { display: none; position: fixed; inset: 0; background: white; z-index: 500; }
 .onboarding-overlay.show { display: flex; flex-direction: column; }

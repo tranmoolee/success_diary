@@ -27,23 +27,23 @@
   <div class="onboarding-slides">
     <div class="onboarding-slide active" data-slide="0">
       <div class="icon">📒</div>
-      <h2>欢迎来到成功日记</h2>
-      <p>这是来自《小狗钱钱》的智慧：每天记录让你自豪的事情，你会发现自己比想象中更优秀。</p>
+      <h2 data-i18n="ob.0.h">欢迎来到成功日记</h2>
+      <p data-i18n="ob.0.p">这是来自《小狗钱钱》的智慧：每天记录让你自豪的事情，你会发现自己比想象中更优秀。</p>
     </div>
     <div class="onboarding-slide" data-slide="1">
       <div class="icon">✍️</div>
-      <h2>每日记录 · 升级打怪</h2>
-      <p>每写一条成功事项就获得 XP。攒满 XP 升级解锁称号，从「自信新手」一路成长到「成功王者」。</p>
+      <h2 data-i18n="ob.1.h">每日记录 · 升级打怪</h2>
+      <p data-i18n="ob.1.p">每写一条成功事项就获得 XP。攒满 XP 升级解锁称号，从「自信新手」一路成长到「成功王者」。</p>
     </div>
     <div class="onboarding-slide" data-slide="2">
       <div class="icon">🏅</div>
-      <h2>解锁专属徽章</h2>
-      <p>三连击、坚持一周、全分类打卡、梦想达成…… 20+ 枚徽章等你收集进徽章馆。</p>
+      <h2 data-i18n="ob.2.h">解锁专属徽章</h2>
+      <p data-i18n="ob.2.p">三连击、坚持一周、全分类打卡、梦想达成…… 20+ 枚徽章等你收集进徽章馆。</p>
     </div>
     <div class="onboarding-slide" data-slide="3">
       <div class="icon">🎨</div>
-      <h2>选择你的形象</h2>
-      <p>默认使用清爽专注界面，也可以在「我的」里切换不同主题。你的日记，你说了算。</p>
+      <h2 data-i18n="ob.3.h">选择你的形象</h2>
+      <p data-i18n="ob.3.p">默认使用清爽专注界面，也可以在「我的」里切换不同主题。你的日记，你说了算。</p>
     </div>
   </div>
   <div class="onboarding-dots">
@@ -53,30 +53,34 @@
     <div class="onboarding-dot" data-dot="3"></div>
   </div>
   <div class="onboarding-bottom">
-    <button class="onboarding-skip" onclick="finishOnboarding()">跳过</button>
-    <button class="onboarding-next" id="onboardingNext" onclick="nextOnboardingSlide()">下一步</button>
+    <button class="onboarding-skip" onclick="finishOnboarding()" data-i18n="ob.skip">跳过</button>
+    <button class="onboarding-next" id="onboardingNext" onclick="nextOnboardingSlide()" data-i18n="ob.next">下一步</button>
   </div>
 </div>
 
 <!-- AUTH -->
 <div class="auth-page" id="authPage">
+  <div class="lang-switch auth-lang">
+    <button data-lang="zh" onclick="setLang('zh')">中</button>
+    <button data-lang="en" onclick="setLang('en')">EN</button>
+  </div>
   <div class="auth-logo">📒</div>
-  <div class="auth-title">成功日记</div>
-  <div class="auth-subtitle">记录你的成功，积累你的自信</div>
+  <div class="auth-title" data-i18n="auth.title">成功日记</div>
+  <div class="auth-subtitle" data-i18n="auth.subtitle">记录你的成功，积累你的自信</div>
   <div class="auth-form">
     <div class="auth-error" id="authError"></div>
     <div id="registerFields" style="display:none;">
-      <input class="auth-input" id="authDisplayName" placeholder="昵称" />
+      <input class="auth-input" id="authDisplayName" data-i18n-ph="auth.displayName" placeholder="昵称" />
     </div>
-    <input class="auth-input" id="authUsername" placeholder="用户名" autocomplete="username" />
-    <input class="auth-input" id="authPassword" type="password" placeholder="密码" autocomplete="current-password" />
+    <input class="auth-input" id="authUsername" data-i18n-ph="auth.username" placeholder="用户名" autocomplete="username" />
+    <input class="auth-input" id="authPassword" type="password" data-i18n-ph="auth.password" placeholder="密码" autocomplete="current-password" />
     <div class="auth-turnstile" id="turnstileContainer" style="display:none;">
       <div id="turnstileWidget"></div>
     </div>
-    <button class="auth-btn" id="authBtn" onclick="handleAuth()">登录</button>
+    <button class="auth-btn" id="authBtn" onclick="handleAuth()" data-i18n="auth.login">登录</button>
     <div class="auth-switch">
-      <span id="authSwitchText">还没有账号？</span>
-      <a id="authSwitchLink" onclick="toggleAuthMode()">注册</a>
+      <span id="authSwitchText" data-i18n="auth.haveNoAccount">还没有账号？</span>
+      <a id="authSwitchLink" onclick="toggleAuthMode()" data-i18n="auth.register">注册</a>
     </div>
   </div>
 </div>
@@ -85,15 +89,15 @@
 <div class="app-shell" id="appShell">
   <div class="announcement-banner" id="announcementBanner" style="display:none;">
     <span id="announcementText"></span>
-    <button class="announcement-close" type="button" onclick="dismissAnnouncement()" aria-label="关闭公告">×</button>
+    <button class="announcement-close" type="button" onclick="dismissAnnouncement()" data-i18n-aria="announcement.close" aria-label="关闭公告">×</button>
   </div>
   <div class="header">
     <div class="header-top">
-      <div><h1>成功日记</h1><div class="subtitle" id="todayDate"></div></div>
+      <div><h1 data-i18n="header.title">成功日记</h1><div class="subtitle" id="todayDate"></div></div>
       <div class="header-right">
         <div class="streak-badge">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-          <span id="streakCount">0</span> 天
+          <span id="streakCount">0</span> <span data-i18n="unit.daysShort">天</span>
         </div>
       </div>
     </div>
@@ -106,12 +110,12 @@
 
       <div class="quote-card">
         <div class="quote-text" id="dailyQuote"></div>
-        <div class="quote-author">— 成功日记理念</div>
+        <div class="quote-author" data-i18n="quote.author">— 成功日记理念</div>
       </div>
 
       <div class="quest-card">
         <div class="quest-head">
-          <h3>🎯 今日任务</h3>
+          <h3 data-i18n="quest.head">🎯 今日任务</h3>
           <span class="quest-progress-text" id="questProgress">0 / 4</span>
         </div>
         <div class="quest-list" id="questList"></div>
@@ -133,20 +137,20 @@
           <div class="progress-center" id="progressCount">0</div>
         </div>
         <div class="progress-info">
-          <h3>今日成功事项</h3>
-          <p id="progressHint">记录让你自豪的事</p>
+          <h3 data-i18n="today.progressTitle">今日成功事项</h3>
+          <p id="progressHint" data-i18n="today.progressHint0">记录让你自豪的事</p>
         </div>
       </div>
 
       <div class="card">
         <div class="entry-input-group" id="entryInputs"></div>
         <div class="entry-actions">
-          <button class="entry-add-btn" onclick="addEntryRow()">+ 再记一条</button>
+          <button class="entry-add-btn" onclick="addEntryRow()" data-i18n="today.addRow">+ 再记一条</button>
         </div>
-        <button class="save-btn" id="saveBtn" onclick="saveToday()">保存今日记录</button>
+        <button class="save-btn" id="saveBtn" onclick="saveToday()" data-i18n="today.save">保存今日记录</button>
       </div>
 
-      <button class="save-btn share-action" style="margin-top:0;" onclick="generateShareCard()">
+      <button class="save-btn share-action" style="margin-top:0;" onclick="generateShareCard()" data-i18n="today.share">
         📤 生成分享卡片
       </button>
     </div>
@@ -161,12 +165,12 @@
         </div>
         <div class="calendar-grid" id="calendarGrid"></div>
         <div class="cal-legend">
-          <span>少</span>
+          <span data-i18n="cal.less">少</span>
           <span class="swatch heat-1" style="background:color-mix(in srgb, var(--primary) 14%, transparent)"></span>
           <span class="swatch heat-2" style="background:color-mix(in srgb, var(--primary) 32%, transparent)"></span>
           <span class="swatch heat-3" style="background:color-mix(in srgb, var(--primary) 54%, transparent)"></span>
           <span class="swatch heat-4" style="background:linear-gradient(135deg, var(--accent), var(--primary))"></span>
-          <span>多</span>
+          <span data-i18n="cal.more">多</span>
         </div>
         <div class="history-detail" id="historyDetail"></div>
       </div>
@@ -177,18 +181,18 @@
       <div class="jar-card">
         <div class="jar-icon">🏦</div>
         <div class="jar-amount" id="jarAmount">¥0</div>
-        <div class="jar-label">愿望存钱罐</div>
+        <div class="jar-label" data-i18n="dreams.jarLabel">愿望存钱罐</div>
         <div class="jar-actions">
-          <button class="jar-btn" onclick="showSavingsModal('deposit')">+ 存入</button>
-          <button class="jar-btn" onclick="showSavingsModal('withdraw')">- 支出</button>
+          <button class="jar-btn" onclick="showSavingsModal('deposit')" data-i18n="dreams.deposit">+ 存入</button>
+          <button class="jar-btn" onclick="showSavingsModal('withdraw')" data-i18n="dreams.withdraw">- 支出</button>
         </div>
       </div>
       <div class="card">
-        <div class="card-title"><span>✨</span> 梦想清单</div>
+        <div class="card-title"><span>✨</span> <span data-i18n="dreams.listTitle">梦想清单</span></div>
         <div class="dream-input-row">
-          <input class="dream-input" id="dreamInput" placeholder="写下你的梦想..." />
-          <input class="dream-input" id="dreamCostInput" placeholder="¥ 费用" style="width:90px;flex:none;" type="number" />
-          <button class="dream-add-btn" onclick="addDream()">添加</button>
+          <input class="dream-input" id="dreamInput" data-i18n-ph="dreams.inputPlaceholder" placeholder="写下你的梦想..." />
+          <input class="dream-input" id="dreamCostInput" data-i18n-ph="dreams.costPlaceholder" placeholder="¥ 费用" style="width:90px;flex:none;" type="number" />
+          <button class="dream-add-btn" onclick="addDream()" data-i18n="dreams.add">添加</button>
         </div>
         <div id="dreamList"></div>
       </div>
@@ -197,23 +201,23 @@
     <!-- STATS -->
     <div class="page" id="page-stats">
       <div class="stat-grid">
-        <div class="stat-card"><div class="stat-value" id="statTotal">0</div><div class="stat-label">总记录天数</div></div>
-        <div class="stat-card"><div class="stat-value" id="statEntries">0</div><div class="stat-label">成功事项</div></div>
-        <div class="stat-card"><div class="stat-value" id="statStreak">0</div><div class="stat-label">最长连续</div></div>
-        <div class="stat-card"><div class="stat-value" id="statAvg">0</div><div class="stat-label">日均条数</div></div>
+        <div class="stat-card"><div class="stat-value" id="statTotal">0</div><div class="stat-label" data-i18n="stats.totalDays">总记录天数</div></div>
+        <div class="stat-card"><div class="stat-value" id="statEntries">0</div><div class="stat-label" data-i18n="stats.totalEntries">成功事项</div></div>
+        <div class="stat-card"><div class="stat-value" id="statStreak">0</div><div class="stat-label" data-i18n="stats.maxStreak">最长连续</div></div>
+        <div class="stat-card"><div class="stat-value" id="statAvg">0</div><div class="stat-label" data-i18n="stats.avgPerDay">日均条数</div></div>
       </div>
-      <div class="chart-container"><div class="chart-title">📈 自信成长曲线（近30天）</div><canvas class="chart-canvas" id="growthChart"></canvas></div>
-      <div class="chart-container"><div class="chart-title">🎯 分类雷达图</div><canvas class="radar-canvas" id="radarChart"></canvas></div>
-      <div class="chart-container"><div class="chart-title">🏷️ 分类统计</div><div class="tag-stats" id="tagStats"></div></div>
+      <div class="chart-container"><div class="chart-title" data-i18n="stats.growthTitle">📈 自信成长曲线（近30天）</div><canvas class="chart-canvas" id="growthChart"></canvas></div>
+      <div class="chart-container"><div class="chart-title" data-i18n="stats.radarTitle">🎯 分类雷达图</div><canvas class="radar-canvas" id="radarChart"></canvas></div>
+      <div class="chart-container"><div class="chart-title" data-i18n="stats.tagTitle">🏷️ 分类统计</div><div class="tag-stats" id="tagStats"></div></div>
     </div>
 
     <!-- BADGES -->
     <div class="page" id="page-badges">
       <div class="badge-summary" id="badgeSummary"></div>
       <div class="badge-filter">
-        <button class="active" data-f="all">全部</button>
-        <button data-f="unlocked">已解锁</button>
-        <button data-f="locked">未解锁</button>
+        <button class="active" data-f="all" data-i18n="badges.all">全部</button>
+        <button data-f="unlocked" data-i18n="badges.unlocked">已解锁</button>
+        <button data-f="locked" data-i18n="badges.locked">未解锁</button>
       </div>
       <div class="badge-grid" id="badgeGrid"></div>
     </div>
@@ -226,41 +230,53 @@
         <div class="profile-username" id="profileUsername"></div>
       </div>
       <div class="profile-section">
-        <div class="profile-section-title">外观风格</div>
+        <div class="profile-section-title" data-i18n="profile.language">语言 / Language</div>
+        <div class="profile-card">
+          <div class="profile-row">
+            <span class="profile-row-label" data-i18n="lang.name">语言</span>
+            <div class="lang-switch profile-lang">
+              <button data-lang="zh" onclick="setLang('zh')">中文</button>
+              <button data-lang="en" onclick="setLang('en')">EN</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="profile-section-title" data-i18n="profile.appearance">外观风格</div>
         <div class="profile-card">
           <div class="theme-picker" id="themePicker"></div>
         </div>
       </div>
       <div class="profile-section">
-        <div class="profile-section-title">个人信息</div>
+        <div class="profile-section-title" data-i18n="profile.info">个人信息</div>
         <div class="profile-card">
           <div class="profile-row">
-            <span class="profile-row-label">昵称</span>
+            <span class="profile-row-label" data-i18n="profile.displayName">昵称</span>
             <div class="profile-row-value">
               <span id="profileDisplayName"></span>
-              <button class="profile-row-action" onclick="showEditNameModal()">修改</button>
+              <button class="profile-row-action" onclick="showEditNameModal()" data-i18n="profile.edit">修改</button>
             </div>
           </div>
           <div class="profile-row">
-            <span class="profile-row-label">用户名</span>
+            <span class="profile-row-label" data-i18n="profile.username">用户名</span>
             <span class="profile-row-value" id="profileUsernameRow"></span>
           </div>
           <div class="profile-row">
-            <span class="profile-row-label">注册时间</span>
+            <span class="profile-row-label" data-i18n="profile.createdAt">注册时间</span>
             <span class="profile-row-value" id="profileCreatedAt"></span>
           </div>
         </div>
       </div>
       <div class="profile-section">
-        <div class="profile-section-title">安全</div>
+        <div class="profile-section-title" data-i18n="profile.security">安全</div>
         <div class="profile-card">
           <div class="profile-row">
-            <span class="profile-row-label">密码</span>
-            <button class="profile-row-action" onclick="showChangePasswordModal()">修改密码</button>
+            <span class="profile-row-label" data-i18n="profile.password">密码</span>
+            <button class="profile-row-action" onclick="showChangePasswordModal()" data-i18n="profile.changePassword">修改密码</button>
           </div>
         </div>
       </div>
-      <button class="profile-logout-btn" onclick="logout()">退出登录</button>
+      <button class="profile-logout-btn" onclick="logout()" data-i18n="profile.logout">退出登录</button>
     </div>
   </div>
 
@@ -268,27 +284,27 @@
   <div class="tab-bar">
     <button class="tab-item active" onclick="switchTab('today')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      <span>今天</span>
+      <span data-i18n="tab.today">今天</span>
     </button>
     <button class="tab-item" onclick="switchTab('history')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-      <span>历史</span>
+      <span data-i18n="tab.history">历史</span>
     </button>
     <button class="tab-item" onclick="switchTab('dreams')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01z"/></svg>
-      <span>梦想</span>
+      <span data-i18n="tab.dreams">梦想</span>
     </button>
     <button class="tab-item" onclick="switchTab('stats')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-      <span>统计</span>
+      <span data-i18n="tab.stats">统计</span>
     </button>
     <button class="tab-item" onclick="switchTab('badges')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M9 13.5V22l3-2 3 2v-8.5"/></svg>
-      <span>徽章</span>
+      <span data-i18n="tab.badges">徽章</span>
     </button>
     <button class="tab-item" onclick="switchTab('me')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      <span>我的</span>
+      <span data-i18n="tab.me">我的</span>
     </button>
   </div>
 </div>
@@ -302,8 +318,8 @@
 <div class="share-preview" id="sharePreview">
   <img id="sharePreviewImg" />
   <div class="share-preview-actions">
-    <button class="share-preview-btn primary" onclick="downloadShareImage()">保存图片</button>
-    <button class="share-preview-btn secondary" onclick="closeSharePreview()">关闭</button>
+    <button class="share-preview-btn primary" onclick="downloadShareImage()" data-i18n="share.previewSave">保存图片</button>
+    <button class="share-preview-btn secondary" onclick="closeSharePreview()" data-i18n="share.previewClose">关闭</button>
   </div>
 </div>
 
@@ -311,29 +327,29 @@
 <div class="modal-overlay" id="savingsModal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h3 id="savingsModalTitle">存入金额</h3>
-    <input class="modal-input" id="savingsInput" type="number" placeholder="输入金额" />
-    <input class="modal-input" id="savingsNote" placeholder="备注（可选）" />
-    <button class="modal-btn" onclick="confirmSavings()">确认</button>
+    <h3 id="savingsModalTitle" data-i18n="savings.depositTitle">存入金额</h3>
+    <input class="modal-input" id="savingsInput" type="number" data-i18n-ph="savings.amountPlaceholder" placeholder="输入金额" />
+    <input class="modal-input" id="savingsNote" data-i18n-ph="savings.notePlaceholder" placeholder="备注（可选）" />
+    <button class="modal-btn" onclick="confirmSavings()" data-i18n="savings.confirm">确认</button>
   </div>
 </div>
 
 <div class="modal-overlay" id="editNameModal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h3>修改昵称</h3>
-    <input class="modal-input" id="editNameInput" placeholder="输入新昵称" />
-    <button class="modal-btn" onclick="confirmEditName()">保存</button>
+    <h3 data-i18n="modal.editName">修改昵称</h3>
+    <input class="modal-input" id="editNameInput" data-i18n-ph="modal.newNamePlaceholder" placeholder="输入新昵称" />
+    <button class="modal-btn" onclick="confirmEditName()" data-i18n="modal.save">保存</button>
   </div>
 </div>
 
 <div class="modal-overlay" id="changePasswordModal">
   <div class="modal">
     <div class="modal-handle"></div>
-    <h3>修改密码</h3>
-    <input class="modal-input" id="currentPasswordInput" type="password" placeholder="当前密码" />
-    <input class="modal-input" id="newPasswordInput" type="password" placeholder="新密码（至少4位）" />
-    <button class="modal-btn" onclick="confirmChangePassword()">确认修改</button>
+    <h3 data-i18n="modal.changePassword">修改密码</h3>
+    <input class="modal-input" id="currentPasswordInput" type="password" data-i18n-ph="modal.currentPassword" placeholder="当前密码" />
+    <input class="modal-input" id="newPasswordInput" type="password" data-i18n-ph="modal.newPassword" placeholder="新密码（至少8位）" />
+    <button class="modal-btn" onclick="confirmChangePassword()" data-i18n="modal.confirmChange">确认修改</button>
   </div>
 </div>
 
@@ -341,7 +357,7 @@
 <div class="toast" id="toast"></div>
 <div class="achievement-toast" id="achievementToast">
   <div class="medal">🏅</div>
-  <div><strong id="achievementTitle">成就达成</strong><span id="achievementText">今天又多了一点自信</span></div>
+  <div><strong id="achievementTitle" data-i18n="fx.achievement">成就达成</strong><span id="achievementText" data-i18n="fx.achievementSub">今天又多了一点自信</span></div>
 </div>
 <div class="confetti-layer" id="confettiLayer"></div>
 <div class="level-up-card" id="levelUpCard">
@@ -353,6 +369,7 @@
 <!-- Scripts (in dependency order) -->
 <script src="./js/config.js"></script>
 <script src="./js/state.js"></script>
+<script src="./js/i18n.js"></script>
 <script src="./js/dom.js"></script>
 <script src="./js/api.js"></script>
 <script src="./js/effects.js"></script>

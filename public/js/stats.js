@@ -111,13 +111,13 @@ function hexToRGBA(hex, a) {
 function renderTagStats(tagStats) {
   const c = el('tagStats');
   if (!tagStats || tagStats.length === 0) {
-    c.innerHTML = '<div class="empty-state" style="padding:16px 0;"><p>暂无数据</p></div>';
+    c.innerHTML = `<div class="empty-state" style="padding:16px 0;"><p>${t('stats.noData')}</p></div>`;
     return;
   }
-  c.innerHTML = tagStats.map(t => `
+  c.innerHTML = tagStats.map(item => `
     <div class="tag-stat">
-      <div class="tag-dot" style="background:${TAG_COLORS[t.tag] || '#94a3b8'}"></div>
-      <span>${escapeHtml(t.tag)}</span><strong>${t.count}</strong>
+      <div class="tag-dot" style="background:${TAG_COLORS[item.tag] || '#94a3b8'}"></div>
+      <span>${escapeHtml(tagLabel(item.tag))}</span><strong>${item.count}</strong>
     </div>`).join('');
 }
 
@@ -168,7 +168,7 @@ function renderRadar(tagStats) {
     ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(x, y); ctx.stroke();
     const lx = cx + Math.cos(ang) * (radius + 16);
     const ly = cy + Math.sin(ang) * (radius + 16);
-    ctx.fillText(labels[i], lx, ly);
+    ctx.fillText(tagLabel(labels[i]), lx, ly);
   }
   // polygon
   ctx.beginPath();

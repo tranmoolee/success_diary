@@ -19,15 +19,15 @@ function renderEntryInputs(entries) {
     c.innerHTML += `
       <div class="entry-row" data-idx="${i}">
         <div class="entry-number${filled}">${i + 1}</div>
-        <input class="entry-input" data-entry="${i}" value="${escapeHtml(e.text || '')}" placeholder="第${i + 1}件成功的事..." />
+        <input class="entry-input" data-entry="${i}" value="${escapeHtml(e.text || '')}" placeholder="${t('today.entryPlaceholder', { n: i + 1 })}" />
         <select class="tag-select" data-tag="${i}">
-          ${TAGS.map(t => `<option value="${t}" ${safeTag(e.tag) === t ? 'selected' : ''}>${t}</option>`).join('')}
+          ${TAGS.map(tg => `<option value="${tg}" ${safeTag(e.tag) === tg ? 'selected' : ''}>${tagLabel(tg)}</option>`).join('')}
         </select>
-        ${entryCount > 1 ? `<button class="entry-remove-btn" onclick="removeEntryRow(${i})" title="删除">×</button>` : ''}
+        ${entryCount > 1 ? `<button class="entry-remove-btn" onclick="removeEntryRow(${i})" title="${t('today.removeTitle')}">×</button>` : ''}
       </div>`;
   }
   updateProgress();
-  el('saveBtn').textContent = entries.length > 0 ? '更新今日记录' : '保存今日记录';
+  el('saveBtn').textContent = entries.length > 0 ? t('today.update') : t('today.save');
   c.addEventListener('input', () => { updateProgress(); updateNumberIndicators(); renderQuests(); }, { once: false });
   renderQuests();
 }
@@ -72,11 +72,11 @@ function rebuildEntryRows(values) {
     c.innerHTML += `
       <div class="entry-row" data-idx="${i}">
         <div class="entry-number${filled}">${i + 1}</div>
-        <input class="entry-input" data-entry="${i}" value="${escapeHtml(v.text || '')}" placeholder="第${i + 1}件成功的事..." />
+        <input class="entry-input" data-entry="${i}" value="${escapeHtml(v.text || '')}" placeholder="${t('today.entryPlaceholder', { n: i + 1 })}" />
         <select class="tag-select" data-tag="${i}">
-          ${TAGS.map(t => `<option value="${t}" ${safeTag(v.tag) === t ? 'selected' : ''}>${t}</option>`).join('')}
+          ${TAGS.map(tg => `<option value="${tg}" ${safeTag(v.tag) === tg ? 'selected' : ''}>${tagLabel(tg)}</option>`).join('')}
         </select>
-        ${entryCount > 1 ? `<button class="entry-remove-btn" onclick="removeEntryRow(${i})" title="删除">×</button>` : ''}
+        ${entryCount > 1 ? `<button class="entry-remove-btn" onclick="removeEntryRow(${i})" title="${t('today.removeTitle')}">×</button>` : ''}
       </div>`;
   }
   updateProgress();
@@ -100,8 +100,8 @@ function updateProgress() {
     ring.style.strokeDashoffset = circ - (count / total) * circ;
   }
   el('progressCount').textContent = count;
-  const hint = count === 0 ? '记录让你自豪的事' :
-    count < total ? `已记录 ${count} 条，继续加油！` : '太棒了！全部完成！';
+  const hint = count === 0 ? t('today.progressHint0') :
+    count < total ? t('today.progressHintMid', { n: count }) : t('today.progressHintAll');
   el('progressHint').textContent = hint;
   updateNumberIndicators();
 }
@@ -114,12 +114,12 @@ async function saveToday() {
     const text = input ? input.value.trim() : '';
     if (text) entries.push({ text, tag: tag ? safeTag(tag.value) : '生活' });
   }
-  if (entries.length === 0) { showToast('至少记录一件成功的事哦'); return; }
+  if (entries.length === 0) { showToast(t('today.needOne')); return; }
   const btn = el('saveBtn');
   btn.disabled = true;
   try {
     await api(`/entries/${todayKey()}`, { method: 'PUT', body: JSON.stringify({ entries }) });
-    showToast(`已保存 ${entries.length} 条记录 ✓`);
+    showToast(t('today.saved', { n: entries.length }));
     celebrateSave(entries.length);
     await loadTodayEntries();
     await loadStatsBackground();
@@ -166,29 +166,29 @@ function quests() {
   return [
     {
       id: 'q-three',
-      title: '记 3 条成功事项',
-      desc: '完成今日的核心打卡',
+      title: t('q.three.t'),
+      desc: t('q.three.d'),
       reward: '+30 XP',
       done: draft.length >= 3,
     },
     {
       id: 'q-health',
-      title: '写一条"健康"类',
-      desc: '关注身体也是成功',
+      title: t('q.health.t'),
+      desc: t('q.health.d'),
       reward: '+15 XP',
       done: draft.some(e => e.tag === '健康'),
     },
     {
       id: 'q-streak',
-      title: '保持连续记录',
-      desc: '别让连续天数断了',
+      title: t('q.streak.t'),
+      desc: t('q.streak.d'),
       reward: '+20 XP',
       done: (cachedStats?.currentStreak || 0) >= 1 && draft.length > 0,
     },
     {
       id: 'q-history',
-      title: '回顾历史',
-      desc: '点开历史 Tab 看一眼',
+      title: t('q.history.t'),
+      desc: t('q.history.d'),
       reward: '+10 XP',
       done: !!flags.viewedHistory,
     },

@@ -26,7 +26,7 @@ function renderThemePicker() {
   c.innerHTML = THEMES.map(t => `
     <div class="theme-tile ${t.key === currentTheme ? 'active' : ''}" onclick="applyTheme('${t.key}')">
       <div class="swatch" style="background:${t.gradient}"></div>
-      <div class="label">${t.emoji} ${t.label}</div>
+      <div class="label">${t.emoji} ${themeLabel(t.key)}</div>
     </div>
   `).join('');
 }

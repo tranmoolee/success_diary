@@ -11,7 +11,7 @@ function heatClass(count) {
 
 async function renderCalendar() {
   const y = calendarDate.getFullYear(), m = calendarDate.getMonth();
-  el('calendarMonth').textContent = `${y}年${m + 1}月`;
+  el('calendarMonth').textContent = fmtMonthYear(y, m);
   const ym = `${y}-${String(m + 1).padStart(2, '0')}`;
   try {
     const rows = await api(`/entries/month/${ym}`);
@@ -22,7 +22,7 @@ async function renderCalendar() {
   }
   const grid = el('calendarGrid');
   grid.innerHTML = '';
-  ['日', '一', '二', '三', '四', '五', '六'].forEach(w => { grid.innerHTML += `<div class="calendar-weekday">${w}</div>`; });
+  calWeekdays().forEach(w => { grid.innerHTML += `<div class="calendar-weekday">${w}</div>`; });
   const firstDay = new Date(y, m, 1).getDay();
   const daysInMonth = new Date(y, m + 1, 0).getDate();
   const today = new Date();
@@ -37,7 +37,7 @@ async function renderCalendar() {
     if (heat) cls += ' has-entry ' + heat;
     grid.innerHTML += `<div class="${cls}" onclick="showDayDetail('${dk}')">${d}</div>`;
   }
-  el('historyDetail').innerHTML = '<div class="empty-state" style="padding:16px 0;"><p>点击日历上的日期查看详情</p></div>';
+  el('historyDetail').innerHTML = `<div class="empty-state" style="padding:16px 0;"><p>${t('history.clickHint')}</p></div>`;
 
   // flag + achievement check
   setFlag('viewedHistory');
@@ -54,15 +54,15 @@ async function showDayDetail(dateKey) {
     const entries = await api(`/entries/${dateKey}`);
     const detail = el('historyDetail');
     if (entries.length === 0) {
-      detail.innerHTML = `<div class="history-date">${formatDate(dateKey)}</div><div class="empty-state" style="padding:20px 0;"><p>这一天还没有记录</p></div>`;
+      detail.innerHTML = `<div class="history-date">${formatDate(dateKey)}</div><div class="empty-state" style="padding:20px 0;"><p>${t('history.noEntry')}</p></div>`;
       return;
     }
-    detail.innerHTML = `<div class="history-date">${formatDate(dateKey)} · ${entries.length} 条记录</div>
+    detail.innerHTML = `<div class="history-date">${formatDate(dateKey)} · ${t('history.dayCount', { n: entries.length })}</div>
       ${entries.map((e, i) => `
         <div class="history-item">
           <div class="entry-number filled">${i + 1}</div>
           <div class="history-text">${escapeHtml(e.text)}</div>
-          <span class="history-tag tag-${safeTag(e.tag)}">${escapeHtml(e.tag)}</span>
+          <span class="history-tag tag-${safeTag(e.tag)}">${escapeHtml(tagLabel(e.tag))}</span>
         </div>`).join('')}`;
   } catch {}
 }

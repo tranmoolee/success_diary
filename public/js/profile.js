@@ -8,7 +8,7 @@ function renderProfile() {
   el('profileDisplayName').textContent = name;
   el('profileUsernameRow').textContent = currentUser.username;
   el('profileCreatedAt').textContent = currentUser.createdAt
-    ? new Date(currentUser.createdAt).toLocaleDateString('zh-CN') : '-';
+    ? new Date(currentUser.createdAt).toLocaleDateString(getLang() === 'en' ? 'en-US' : 'zh-CN') : '-';
   renderThemePicker();
 }
 
@@ -20,14 +20,14 @@ function showEditNameModal() {
 
 async function confirmEditName() {
   const name = el('editNameInput').value.trim();
-  if (!name) { showToast('昵称不能为空'); return; }
+  if (!name) { showToast(t('profile.nameEmpty')); return; }
   try {
     const updated = await api('/auth/profile', { method: 'PATCH', body: JSON.stringify({ displayName: name }) });
     currentUser.displayName = updated.displayName;
     el('editNameModal').classList.remove('show');
     renderProfile();
     renderHeroCard(cachedStats);
-    showToast('昵称已更新');
+    showToast(t('profile.nameUpdated'));
   } catch (e) { showToast(e.message); }
 }
 
@@ -41,10 +41,10 @@ function showChangePasswordModal() {
 async function confirmChangePassword() {
   const current = el('currentPasswordInput').value;
   const newPwd = el('newPasswordInput').value;
-  if (!current || !newPwd) { showToast('请填写完整'); return; }
+  if (!current || !newPwd) { showToast(t('profile.fillAll')); return; }
   try {
     await api('/auth/password', { method: 'PATCH', body: JSON.stringify({ currentPassword: current, newPassword: newPwd }) });
     el('changePasswordModal').classList.remove('show');
-    showToast('密码已修改');
+    showToast(t('profile.pwdChanged'));
   } catch (e) { showToast(e.message); }
 }

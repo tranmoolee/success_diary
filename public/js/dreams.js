@@ -23,7 +23,7 @@ async function loadDreamsBackground() {
 function renderDreamList(dreams) {
   const c = el('dreamList');
   if (dreams.length === 0) {
-    c.innerHTML = '<div class="empty-state" style="padding:30px 0;"><div class="empty-state-icon">⭐</div><p>写下你的梦想吧<br>有了目标才有动力前进</p></div>';
+    c.innerHTML = `<div class="empty-state" style="padding:30px 0;"><div class="empty-state-icon">⭐</div><p>${t('dreams.empty')}</p></div>`;
     return;
   }
   c.innerHTML = dreams.map(d => {
@@ -34,7 +34,7 @@ function renderDreamList(dreams) {
       <div class="dream-content">
         <div class="dream-name ${d.done ? 'done' : ''}">${escapeHtml(d.name)}</div>
         ${cost > 0 ? `<div class="dream-cost-row">
-          <div class="dream-cost-label">进度</div>
+          <div class="dream-cost-label">${t('dreams.progress')}</div>
           <div class="dream-progress-bar"><div class="dream-progress-fill" style="width:${pct}%"></div></div>
           <div class="dream-amount">¥${saved}/${cost}</div>
         </div>` : ''}
@@ -53,7 +53,7 @@ async function addDream() {
     el('dreamInput').value = '';
     el('dreamCostInput').value = '';
     loadDreams();
-    showToast('梦想已添加');
+    showToast(t('dreams.added'));
     burstConfetti(0.7);
   } catch (e) { showToast(e.message); }
 }
@@ -66,7 +66,7 @@ async function toggleDream(id) {
       const wasDone = !!d.done;
       await api(`/dreams/${id}`, { method: 'PATCH', body: JSON.stringify({ done: !wasDone }) });
       if (!wasDone) {
-        showAchievement('梦想达成！', `「${d.name}」完成了`, '🎉');
+        showAchievement(t('dreams.doneTitle'), t('dreams.doneText', { name: d.name }), '🎉');
         burstConfetti(2);
       }
     }
@@ -84,7 +84,7 @@ async function deleteDream(id) {
 // ============ SAVINGS ============
 function showSavingsModal(mode) {
   savingsMode = mode;
-  el('savingsModalTitle').textContent = mode === 'deposit' ? '存入金额' : '支出金额';
+  el('savingsModalTitle').textContent = mode === 'deposit' ? t('savings.depositTitle') : t('savings.withdrawTitle');
   el('savingsModal').classList.add('show');
   el('savingsInput').value = '';
   el('savingsNote').value = '';
@@ -93,7 +93,7 @@ function showSavingsModal(mode) {
 
 async function confirmSavings() {
   const amount = parseFloat(el('savingsInput').value);
-  if (!amount || amount <= 0) { showToast('请输入有效金额'); return; }
+  if (!amount || amount <= 0) { showToast(t('savings.invalid')); return; }
   try {
     const data = await api('/savings', {
       method: 'POST',
@@ -102,7 +102,7 @@ async function confirmSavings() {
     el('savingsModal').classList.remove('show');
     cachedJarBalance = parseFloat(data.balance) || 0;
     el('jarAmount').textContent = `¥${cachedJarBalance.toLocaleString()}`;
-    showToast(savingsMode === 'deposit' ? `已存入 ¥${amount}` : `已支出 ¥${amount}`);
+    showToast(savingsMode === 'deposit' ? t('savings.deposited', { n: amount }) : t('savings.withdrawn', { n: amount }));
     if (savingsMode === 'deposit') burstConfetti(0.6);
     checkAchievements();
   } catch (e) { showToast(e.message); }

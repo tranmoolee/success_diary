@@ -86,7 +86,7 @@ function startDailyLimitReminder() {
   dailyLimitTimer = setInterval(() => {
     const startedAt = Number(sessionStorage.getItem(key) || Date.now());
     if (Date.now() - startedAt >= minutes * 60 * 1000) {
-      showToast(`今天已使用约 ${minutes} 分钟，休息一下再回来吧`);
+      showToast(t('limit.reminder', { n: minutes }));
       clearInterval(dailyLimitTimer);
     }
   }, 30 * 1000);
@@ -109,12 +109,38 @@ function switchTab(name) {
   }
 }
 
+// Re-render dynamic (JS-generated) content after a language switch.
+// Static [data-i18n] nodes are already handled by applyI18n() in setLang().
+function refreshDynamicI18n() {
+  // auth page (works whether logged in or not)
+  if (typeof updateAuthModeText === 'function') updateAuthModeText();
+  if (typeof updateRegistrationAvailability === 'function') updateRegistrationAvailability();
+
+  if (token && currentUser) {
+    updateHeaderDate();
+    updateDailyQuote();
+    renderHeroCard(cachedStats);
+    renderQuests();
+    rebuildEntryRows(collectEntryValues());
+    renderThemePicker();
+    renderBadges();
+    if (typeof renderProfile === 'function') renderProfile();
+    const active = document.querySelector('.page.active');
+    const id = active ? active.id : '';
+    if (id === 'page-stats') renderStats();
+    if (id === 'page-history') renderCalendar();
+    if (id === 'page-dreams') loadDreams();
+  }
+}
+
 // modal click-outside to close
 document.querySelectorAll('.modal-overlay').forEach(m => {
   m.addEventListener('click', function (e) { if (e.target === this) this.classList.remove('show'); });
 });
 
 // boot
+applyI18n();
+renderLangToggles();
 initAnalytics();
 document.body.dataset.theme = currentTheme;
 if (token) {
@@ -123,6 +149,7 @@ if (token) {
   el('authPage').classList.remove('hide');
   // for non-logged-in: still set up theme
   applyTheme(currentTheme);
+  updateAuthModeText();
   initTurnstile();
 }
 el('authPassword').addEventListener('keydown', e => { if (e.key === 'Enter') handleAuth(); });

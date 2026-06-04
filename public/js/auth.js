@@ -28,7 +28,7 @@ function updateRegistrationAvailability() {
   const enabled = isRegistrationEnabled();
   link.classList.toggle('disabled', !enabled && isLoginMode);
   if (isLoginMode) {
-    link.textContent = enabled ? '注册' : '暂未开放';
+    link.textContent = enabled ? t('auth.register') : t('auth.regClosed');
   }
 }
 
@@ -37,11 +37,11 @@ function renderTurnstile() {
   if (!target || isLoginMode) return;
   clearTimeout(turnstileRenderTimer);
   if (!turnstileSiteKey) {
-    target.innerHTML = '<div class="auth-turnstile-placeholder">人机验证未配置</div>';
+    target.innerHTML = `<div class="auth-turnstile-placeholder">${t('auth.turnstileMissing')}</div>`;
     return;
   }
   if (!window.turnstile) {
-    target.innerHTML = '<div class="auth-turnstile-placeholder">正在加载人机验证...</div>';
+    target.innerHTML = `<div class="auth-turnstile-placeholder">${t('auth.turnstileLoading')}</div>`;
     turnstileRenderTimer = setTimeout(renderTurnstile, 250);
     return;
   }
@@ -70,18 +70,25 @@ function resetTurnstile() {
   }
 }
 
+// Sync auth button + switch link text to current mode & language
+function updateAuthModeText() {
+  el('authBtn').textContent = isLoginMode ? t('auth.login') : t('auth.register');
+  el('authSwitchText').textContent = isLoginMode ? t('auth.haveNoAccount') : t('auth.haveAccount');
+  el('authSwitchLink').textContent = isLoginMode
+    ? (isRegistrationEnabled() ? t('auth.register') : t('auth.regClosed'))
+    : t('auth.login');
+}
+
 function toggleAuthMode() {
   if (isLoginMode && !isRegistrationEnabled()) {
-    el('authError').textContent = '当前暂未开放注册';
+    el('authError').textContent = t('auth.regDisabledMsg');
     el('authError').classList.add('show');
     return;
   }
   isLoginMode = !isLoginMode;
   el('registerFields').style.display = isLoginMode ? 'none' : 'block';
   el('turnstileContainer').style.display = isLoginMode ? 'none' : 'flex';
-  el('authBtn').textContent = isLoginMode ? '登录' : '注册';
-  el('authSwitchText').textContent = isLoginMode ? '还没有账号？' : '已有账号？';
-  el('authSwitchLink').textContent = isLoginMode ? (isRegistrationEnabled() ? '注册' : '暂未开放') : '登录';
+  updateAuthModeText();
   el('authError').classList.remove('show');
   if (!isLoginMode) requestAnimationFrame(renderTurnstile);
 }
@@ -91,7 +98,7 @@ async function handleAuth() {
   const password = el('authPassword').value;
   const errEl = el('authError');
   if (!username || !password) {
-    errEl.textContent = '请填写用户名和密码';
+    errEl.textContent = t('auth.needUserPass');
     errEl.classList.add('show');
     return;
   }
@@ -103,18 +110,18 @@ async function handleAuth() {
     const body = { username, password };
     if (!isLoginMode) {
       if (!isRegistrationEnabled()) {
-        errEl.textContent = '当前暂未开放注册';
+        errEl.textContent = t('auth.regDisabledMsg');
         errEl.classList.add('show');
         btn.disabled = false;
-        btn.textContent = '注册';
+        btn.textContent = t('auth.register');
         return;
       }
       const turnstileToken = document.querySelector('[name="cf-turnstile-response"]')?.value || '';
       if (!turnstileToken) {
-        errEl.textContent = '请先完成人机验证';
+        errEl.textContent = t('auth.needTurnstile');
         errEl.classList.add('show');
         btn.disabled = false;
-        btn.textContent = '注册';
+        btn.textContent = t('auth.register');
         return;
       }
       body.displayName = el('authDisplayName').value.trim() || username;
@@ -134,7 +141,7 @@ async function handleAuth() {
     if (!isLoginMode) resetTurnstile();
   } finally {
     btn.disabled = false;
-    btn.textContent = isLoginMode ? '登录' : '注册';
+    btn.textContent = isLoginMode ? t('auth.login') : t('auth.register');
   }
 }
 
@@ -149,6 +156,26 @@ function logout() {
   initTurnstile();
 }
 
+// header date — 5月22日 周五 / May 22, Fri
+function updateHeaderDate() {
+  const dt = el('todayDate');
+  if (!dt) return;
+  const now = new Date();
+  const wd = weekdayName(now.getDay());
+  dt.textContent = getLang() === 'en'
+    ? `${MONTHS_EN[now.getMonth()]} ${now.getDate()}, ${wd}`
+    : `${now.getMonth() + 1}月${now.getDate()}日 ${wd}`;
+}
+
+// daily quote — stable per day, localized
+function updateDailyQuote() {
+  const q = el('dailyQuote');
+  if (!q) return;
+  const list = localizedQuotes();
+  const qi = Math.floor(Date.now() / 86400000) % list.length;
+  q.textContent = list[qi];
+}
+
 async function enterApp() {
   el('authPage').classList.add('hide');
   el('appShell').classList.add('active');
@@ -161,11 +188,8 @@ async function enterApp() {
   } else {
     applyTheme(currentTheme);
   }
-  const now = new Date();
-  const wd = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-  el('todayDate').textContent = `${now.getMonth() + 1}月${now.getDate()}日 ${wd[now.getDay()]}`;
-  const qi = Math.floor(now.getTime() / 86400000) % QUOTES.length;
-  el('dailyQuote').textContent = QUOTES[qi];
+  updateHeaderDate();
+  updateDailyQuote();
 
   await syncAchievementsFromServer();
   await loadTodayEntries();
