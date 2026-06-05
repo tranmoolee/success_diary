@@ -32,6 +32,10 @@ function updateRegistrationAvailability() {
   }
 }
 
+function turnstileSize() {
+  return window.matchMedia('(max-width: 360px)').matches ? 'compact' : 'normal';
+}
+
 function renderTurnstile() {
   const target = el('turnstileWidget');
   if (!target || isLoginMode) return;
@@ -54,6 +58,7 @@ function renderTurnstile() {
   turnstileWidgetId = window.turnstile.render(target, {
     sitekey: turnstileSiteKey,
     action: 'register',
+    size: turnstileSize(),
     theme: currentTheme === 'boy' ? 'dark' : 'auto',
     callback: () => console.info('[turnstile] challenge completed'),
     'error-callback': () => console.warn('[turnstile] challenge error'),
